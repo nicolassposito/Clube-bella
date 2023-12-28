@@ -46,13 +46,13 @@ export function Header({}: HeaderProps) {
         />
         <Image
           src={logosm}
-          className="w-36 hidden sm:block"
+          className="w-36 hidden sm:block md:hidden"
           alt="Home"
         />
         <NavigationMenu className="ml-0.5 md:ml-3">
           <NavigationMenuList>
             <NavigationMenuItem>
-              <NavigationMenuTrigger className="text-neutral-700 bg-transparent md:px-3 px-2">
+              <NavigationMenuTrigger className="text-neutral-700 bg-transparent md:px-3 px-2 text-base md:text-sm">
                 Menu
               </NavigationMenuTrigger>
               <NavigationMenuContent className="p-3 flex flex-col">
@@ -69,7 +69,7 @@ export function Header({}: HeaderProps) {
       <div className="flex items-center">
         <Button className="bg-pink-500 hover:bg-rose-400 md:px-4 px-3">
           <UserRound width={16} className="mr-1" />
-          <span className="text-sm">Login</span>
+          <span className="text-base md:text-sm">Login</span>
         </Button>
         <div className="ml-3 relative">
           <DropdownMenu>
