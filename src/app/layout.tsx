@@ -1,4 +1,4 @@
-import { Poppins as FontSans } from "next/font/google";
+import { Poppins } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 
 import { cn } from "@/lib/utils";
@@ -9,7 +9,7 @@ interface RootLayoutProps {
   children: ReactNode;
 }
 
-export const fontSans = FontSans({
+const poppins = Poppins({
   subsets: ["latin"],
   variable: "--font-sans",
   weight: ["400", "500", "600"],
@@ -35,14 +35,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head />
-      <body
-        className={cn(
-          "min-h-screen font-sans bg-background antialiased",
-          fontSans.variable
-        )}
-      >
+      <body className={cn("min-h-screen font-sans bg-background antialiased")}>
+        <div className={poppins.className}>
         <ThemeProvider
-          themes={['light', 'dark']}
+          themes={["light", "dark"]}
           attribute="class"
           defaultTheme="light"
           disableTransitionOnChange
@@ -50,6 +46,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         >
           {children}
         </ThemeProvider>
+        </div>
       </body>
     </html>
   );

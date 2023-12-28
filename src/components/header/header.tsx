@@ -46,8 +46,9 @@ export function Header({}: HeaderProps) {
           <UserRound width={16} className="mr-1" />
           Login
         </Button>
-        <div className="ml-3">
+        <div className="ml-3 relative">
           <Bell className="bg-neutral-200 p-2.5 rounded-full text-neutral-600 cursor-pointer" height={40} width={40}/>
+          <div className="absolute bg-pink-400 text-white flex items-center justify-center w-5 h-5 text-xs rounded-full font-medium" style={{right: '-5px', bottom: '-6px'}}>1</div>
         </div>
       </div>
     </header>
