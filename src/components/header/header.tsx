@@ -19,7 +19,7 @@ interface HeaderProps {}
 export function Header({}: HeaderProps) {
   return (
     <header
-      className="flex items-center justify-between container py-2"
+      className="flex items-center justify-between px-3 py-2"
       style={{ boxShadow: "rgba(230, 109, 153, 0.4) 0px -3px 15px 1px;" }}
     >
       <div className="flex">
