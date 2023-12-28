@@ -21,6 +21,7 @@ import { Separator } from "@/components/ui/separator"
 import Image from "next/image";
 import logo from "..//..//..//public/images/logo-600.png";
 import logoB from "..//..//..//public/images/logo-b.png";
+import logosm from "..//..//..//public/images/logo-sm.png";
 import { Button } from "@/components/ui/button";
 import { UserRound, Bell } from "lucide-react";
 
@@ -32,7 +33,7 @@ export function Header({}: HeaderProps) {
       className="flex items-center justify-between px-2 pr-3 py-3"
       style={{ boxShadow: "rgba(230, 109, 153, 0.4) 0px -3px 15px 1px;" }}
     >
-      <div className="flex">
+      <div className="flex items-center">
         <Image
           src={logo}
           className="md:w-56 md:block hidden"
@@ -40,7 +41,12 @@ export function Header({}: HeaderProps) {
         />
         <Image
           src={logoB}
-          className="w-16 md:hidden"
+          className="w-16 sm:hidden"
+          alt="Home"
+        />
+        <Image
+          src={logosm}
+          className="w-36 hidden sm:block"
           alt="Home"
         />
         <NavigationMenu className="ml-0.5 md:ml-3">
