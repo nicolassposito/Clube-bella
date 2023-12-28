@@ -30,7 +30,7 @@ interface HeaderProps {}
 export function Header({}: HeaderProps) {
   return (
     <header
-      className="flex items-center justify-between px-2 pr-3 py-3"
+      className="sticky top-0 bg-white z-10 flex items-center justify-between px-2 pr-3 py-3"
       style={{ boxShadow: "rgba(230, 109, 153, 0.4) 0px -3px 15px 1px;" }}
     >
       <div className="flex items-center">
@@ -71,7 +71,7 @@ export function Header({}: HeaderProps) {
           <UserRound width={16} className="mr-1" />
           <span className="text-base md:text-sm">Login</span>
         </Button>
-        <div className="ml-3 relative">
+        <div className="ml-3 relative flex">
           <DropdownMenu>
             <DropdownMenuTrigger>
               <Bell
