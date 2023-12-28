@@ -10,10 +10,14 @@ import {
   NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
 import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator"
 import Image from "next/image";
 import logo from "..//..//..//public/images/logo-600.png";
 import logoB from "..//..//..//public/images/logo-b.png";
@@ -32,12 +36,12 @@ export function Header({}: HeaderProps) {
         <Image
           src={logo}
           className="md:w-56 md:block hidden"
-          alt="Picture of the author"
+          alt="Home"
         />
         <Image
           src={logoB}
           className="w-16 md:hidden"
-          alt="Picture of the author"
+          alt="Home"
         />
         <NavigationMenu className="ml-0.5 md:ml-3">
           <NavigationMenuList>
@@ -62,8 +66,8 @@ export function Header({}: HeaderProps) {
           <span className="text-sm">Login</span>
         </Button>
         <div className="ml-3 relative">
-          <HoverCard>
-            <HoverCardTrigger>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
               <Bell
                 className="bg-neutral-200 p-2.5 rounded-full text-neutral-600 cursor-pointer"
                 height={40}
@@ -75,11 +79,16 @@ export function Header({}: HeaderProps) {
               >
                 1
               </div>
-            </HoverCardTrigger>
-            <HoverCardContent>
-              Lorem ipsum dolor sit amet consectetur adipisicing 
-            </HoverCardContent>
-          </HoverCard>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+            <DropdownMenuLabel className="font-medium">
+                <div>
+                  Você ganhou 20%OFF 😍😍
+                </div>
+                <Separator className="mt-2.5"/>
+              </DropdownMenuLabel>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </header>
