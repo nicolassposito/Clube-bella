@@ -17,7 +17,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Separator } from "@/components/ui/separator"
+import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
 import logo from "..//..//..//public/images/logo-600.png";
 import logoB from "..//..//..//public/images/logo-b.png";
@@ -34,16 +34,8 @@ export function Header({}: HeaderProps) {
       style={{ boxShadow: "rgba(230, 109, 153, 0.4) 0px -3px 15px 1px;" }}
     >
       <div className="flex items-center">
-        <Image
-          src={logo}
-          className="md:w-56 md:block hidden"
-          alt="Home"
-        />
-        <Image
-          src={logoB}
-          className="w-16 sm:hidden"
-          alt="Home"
-        />
+        <Image src={logo} className="md:w-56 md:block hidden" alt="Home" />
+        <Image src={logoB} className="w-16 sm:hidden" alt="Home" />
         <Image
           src={logosm}
           className="w-36 hidden sm:block md:hidden"
@@ -58,9 +50,7 @@ export function Header({}: HeaderProps) {
               <NavigationMenuContent className="p-3 flex flex-col">
                 <NavigationMenuLink className="my-1">Home</NavigationMenuLink>
                 <NavigationMenuLink className="my-1">Planos</NavigationMenuLink>
-                <NavigationMenuLink className="my-1">
-                  Contato
-                </NavigationMenuLink>
+                <NavigationMenuLink className="my-1">Contato</NavigationMenuLink>
               </NavigationMenuContent>
             </NavigationMenuItem>
           </NavigationMenuList>
@@ -87,11 +77,9 @@ export function Header({}: HeaderProps) {
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-            <DropdownMenuLabel className="font-medium">
-                <div>
-                  Você ganhou 20%OFF 😍😍
-                </div>
-                <Separator className="mt-2.5"/>
+              <DropdownMenuLabel className="font-medium">
+                <div>Você ganhou 20%OFF 😍😍</div>
+                <Separator className="mt-2.5" />
               </DropdownMenuLabel>
             </DropdownMenuContent>
           </DropdownMenu>
