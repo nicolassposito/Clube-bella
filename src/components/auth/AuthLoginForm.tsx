@@ -9,6 +9,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import './styles.css'
+import logo from "..//..//..//public/images/logo-b.png";
+import Image from "next/image";
 
 interface AuthLoginFormProps {
   message: string
@@ -39,10 +42,14 @@ export function AuthLoginForm({ message }: AuthLoginFormProps) {
   }
 
   return (
-    <div className="flex flex-col w-full gap-8">
+    <>
+    <div className="auth-background"></div>
+    <div>
+    <Image src={logo} width={50} className="absolute left-5 top-5" alt="Bella Hair" />
+    </div>
+    <div className="max-w-lg absolute w-full top-1/2 left-1/2 bg-transparent p-5 rounded-lg" style={{transform: 'translate(-50%, -50%)', boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)', backdropFilter: 'blur(5px)'}}>
       <div className='flex flex-col'>
-        <h1 className='text-xl font-semibold text-foreground'>Olá novamente</h1>
-        <span className='text-muted-foreground'>Faça seu login para entrar na plataforma</span>
+        <h1 className='text-xl my-4 font-semibold text-foreground'>Olá novamente</h1>
       </div>
       <Form {...loginForm}>
         <form
@@ -79,8 +86,8 @@ export function AuthLoginForm({ message }: AuthLoginFormProps) {
           />
 
           <div className='mt-4 flex flex-col gap-3 w-full'>
-            <Button type="submit" disabled={loginForm.formState.isSubmitting}>
-              {loginForm.formState.isSubmitting ? 'Carregando...' : 'Entrar'}
+            <Button className="bg-rose-400 hover:bg-rose-500" type="submit">
+              Entrar
             </Button>
             <Link href="/auth/register" className={buttonVariants({ variant: "ghost" })}>
               Criar uma conta
@@ -93,5 +100,6 @@ export function AuthLoginForm({ message }: AuthLoginFormProps) {
         </form>
       </Form>
     </div>
+    </>
   )
 };
