@@ -18,10 +18,6 @@ export default async function Dashboard(){
     return (
         <>
         <Sidebar />
-        <div className="min-h-screen bg-gray-900 text-gray-300">
-            <div className="container mx-auto p-6 sm:p-12">
-                <div className="flex justify-between items-start">
-                    <h1 className="text-5xl md:text-6xl font-extrabold text-white mb-6">Dashboard</h1>
                     <form action="/auth/signout" method="post">
                         <button 
                             type="submit" 
@@ -30,12 +26,6 @@ export default async function Dashboard(){
                             Sign out
                         </button>
                     </form>
-                </div>
-                <div className="mt-6">
-                    
-                </div>
-            </div>
-        </div>
         </>
     )
 }
