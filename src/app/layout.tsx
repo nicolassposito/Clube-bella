@@ -1,6 +1,5 @@
 import { Poppins } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
-
 import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
 import { ReactNode } from "react";
