@@ -10,6 +10,7 @@ import { permanentRedirect, redirect } from "next/navigation"
 export async function signIn({ email, password}: Login) {
   const cookieStore = cookies()
   const supabase = createSupabaseServerClient(cookieStore)
+
   const { error } = await supabase.auth.signInWithPassword({
     email,
     password,
@@ -28,20 +29,18 @@ export async function signUp({email, password}: Login) {
 
   const cookieStore = cookies()
   const supabase = createSupabaseServerClient(cookieStore)
-  const { data } = await supabase.from('profiles').select('id, username')
+
   const { error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      data: {
-        username: 'Joao',
-      },
       emailRedirectTo: `${origin}/auth/callback`,
     },
   })
 
   if (error) {
-    return redirect(`${AUTH_LOGIN_ROUTE}?message=${ERROR_MESSAGES.AUTH.COULD_NOT_AUTHENTICATE_USER}`)
+    // return redirect(`${AUTH_LOGIN_ROUTE}?message=${ERROR_MESSAGES.AUTH.COULD_NOT_AUTHENTICATE_USER}`)
+    console.log(error);
   }
 
   return redirect(`${AUTH_LOGIN_ROUTE}?message=${ERROR_MESSAGES.AUTH.CHECK_YOUR_EMAIL}`)

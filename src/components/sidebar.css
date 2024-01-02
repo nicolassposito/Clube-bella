@@ -1,8 +1,12 @@
 .sidebar-item.active{
     background-color: #f8f8f8;
-    color: #e56a9d;
+    color: #e04569;
 }
 
 .sidebar-item.active span{
     color: #e56a9d;
+}
+
+.sidebar-item:hover{
+    background-color: #f8f8f8;
 }

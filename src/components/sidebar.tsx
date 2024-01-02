@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from 'next/navigation'; // Importação correta do usePathname
 import { useSidebarContext } from "@/contexts/sidebar-context";
 import { cn } from "@/lib/utils";
 import { Separator } from "./ui/separator";
@@ -16,6 +17,16 @@ interface SidebarProps {}
 
 export function Sidebar({}: SidebarProps) {
   const { isSidebarExpanded } = useSidebarContext();
+  const pathname = usePathname(); // Uso do usePathname
+
+  // Função para determinar se o link é o ativo
+  const getLinkClassName = (path: string) => {
+    return cn(
+      "flex items-center gap-4 px-3 overflow-clip py-2 rounded sidebar-item",
+      pathname === path ? "active" : ""
+    );
+  };
+
   return (
     <aside
       className={cn(
@@ -29,18 +40,12 @@ export function Sidebar({}: SidebarProps) {
       </div>
 
       <div className="flex flex-col gap-6">
-        {/* <Logo className="pl-3 overflow-clip gap-3" /> */}
         <Separator className="w-full" />
       </div>
 
-      {/* <nav className="flex flex-col gap-3 grow">
-        {dashboardNavItems.map((item) => (
-          <SidebarNavItem key={item.href} {...item} />
-        ))}
-      </nav> */}
-
       <div className="flex flex-col gap-3">
-      <Link href='/dashboard' className="flex items-center gap-4 px-3 overflow-clip py-2 rounded sidebar-item active">
+      <Link href='/dashboard'>
+      <div className={`${getLinkClassName('/dashboard')} flex items-center gap-4 px-3 overflow-clip py-2 rounded sidebar-item`}>
           <UserCheck className="shrink-0 w-5 aspect-square text-primary" />
           <div className="flex flex-col whitespace-nowrap">
             <span className="text-zinc-800 font-semibold text-sm">
@@ -50,8 +55,10 @@ export function Sidebar({}: SidebarProps) {
               Gerencie sua assinatura
             </span>
           </div>
+          </div>
         </Link>
-        <Link href='/dashboard/preferencias' className="flex items-center gap-4 px-3 overflow-clip py-2 rounded sidebar-item">
+        <Link href='/dashboard/preferencias'>
+        <div className={`${getLinkClassName('/dashboard/preferencias')} flex items-center gap-4 px-3 overflow-clip py-2 rounded sidebar-item`}>
           <Settings className="shrink-0 w-5 aspect-square text-primary" />
           <div className="flex flex-col whitespace-nowrap">
             <span className="text-zinc-800 font-semibold text-sm">
@@ -60,6 +67,7 @@ export function Sidebar({}: SidebarProps) {
             <span className="text-xs text-muted-foreground">
               Preferências de recebimento
             </span>
+          </div>
           </div>
         </Link>
         <Link href='/dashboard/troca' className="flex items-center gap-4 px-3 overflow-clip py-2 rounded sidebar-item">

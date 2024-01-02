@@ -68,7 +68,7 @@ export function AuthRegisterForm({ message }: AuthRegisterFormProps) {
       >
         <div className="flex flex-col">
           <h1 className="text-xl my-4 font-semibold text-foreground">
-            Olá!
+            Olá! Crie sua conta
           </h1>
         </div>
         <Form {...registerForm}>
