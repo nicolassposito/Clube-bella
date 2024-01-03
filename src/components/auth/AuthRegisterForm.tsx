@@ -30,6 +30,9 @@ const registerFormSchema = z.object({
   password: z.string().min(8, {
     message: "Senha deve ter no mínimo 8 caracteres.",
   }),
+  fullname: z.string().min(1, {
+    message: "Por favor, insira seu nome completo.",
+  }),
 });
 
 export type Register = z.infer<typeof registerFormSchema>;
@@ -71,11 +74,32 @@ export function AuthRegisterForm({ message }: AuthRegisterFormProps) {
             Olá! Crie sua conta
           </h1>
         </div>
+        
         <Form {...registerForm}>
-          <form
-            onSubmit={registerForm.handleSubmit(handleSignUp)}
-            className="flex flex-col w-full grow items-center gap-4 text-foreground"
-          >
+        <form
+          onSubmit={registerForm.handleSubmit(handleSignUp)}
+          className="flex flex-col w-full grow items-center gap-4 text-foreground"
+        >
+          {/* Campos de Email e Senha */}
+          {/* Campo fullname adicionado */}
+          <FormField
+            control={registerForm.control}
+            name="fullname"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <Label htmlFor="fullname">Nome Completo</Label>
+                <FormControl>
+                  <Input
+                    type="text"
+                    autoComplete="fullname"
+                    placeholder="Seu nome completo"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
             <FormField
               control={registerForm.control}
               name="email"

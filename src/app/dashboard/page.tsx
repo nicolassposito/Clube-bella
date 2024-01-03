@@ -21,6 +21,7 @@ export default async function Dashboard() {
     <>
       <div className="flex">
         <Sidebar />
+        Olá 
         <form action="/auth/signout" method="post">
           <button
             type="submit"
