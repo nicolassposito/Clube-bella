@@ -1,27 +1,16 @@
-import { cookies } from "next/headers";
-import { permanentRedirect } from "next/navigation";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+"use client";
+
+import React, { useEffect, useState } from 'react';
 import { Sidebar } from "@/components/sidebar";
+import { createClient } from '@supabase/supabase-js';
+import { getFullName } from './accInfo';
 
-export default async function Dashboard() {
-  const cookieStore = cookies();
-  const supabase = createServerComponentClient({ cookies: () => cookieStore });
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-  const user = session?.user;
-  if (user) {
-    console.log("logado");
-  } else {
-    console.log("nao logado");
-    permanentRedirect("/auth/login");
-  }
-
+export default function Dashboard() {
   return (
     <>
       <div className="flex">
         <Sidebar />
-        Olá 
+        Olá
         <form action="/auth/signout" method="post">
           <button
             type="submit"

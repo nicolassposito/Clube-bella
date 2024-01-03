@@ -1,13 +1,19 @@
+"use server"
+
 import { createSupabaseServerClient } from "@/lib/database/server";
 import { cookies } from "next/headers";
 
-export async function getFullName(userId) {
+export async function getFullName(userId: string): Promise<string | null> {
     const cookieStore = cookies()
-  const supabase = createSupabaseServerClient(cookieStore)
+    const supabase = createSupabaseServerClient(cookieStore)
+    const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const user = session?.user;
     const { data, error } = await supabase
         .from('profiles')
         .select('fullname')
-        .eq('id', userId)
+        .eq('id', user?.id)
         .single();
 
     if (error) {
