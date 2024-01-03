@@ -30,7 +30,7 @@ export function Sidebar({}: SidebarProps) {
   return (
     <aside
       className={cn(
-        "hidden md:flex flex-col gap-5 h-screen top-0 py-4 px-2 sticky border-r",
+        "flex flex-col gap-5 h-screen top-0 py-4 px-2 sticky border-r",
         isSidebarExpanded ? "w-64" : "w-16"
       )}
     >
