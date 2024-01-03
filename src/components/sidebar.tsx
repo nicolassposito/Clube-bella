@@ -84,10 +84,10 @@ export function Sidebar({}: SidebarProps) {
 
         <ThemeSwitcher />
         <SidebarExpandToggle />
-        <form className='px-3 overflow-clip py-2 rounded sidebar-item' action="/auth/signout" method="post">
+        <form className='px-3 overflow-clip rounded sidebar-item' action="/auth/signout" method="post">
           <button
             type="submit"
-            className="flex items-center text-left gap-4 overflow-clip rounded sidebar-item"
+            className="flex items-center text-left py-2 gap-4 overflow-clip rounded sidebar-item"
           >
             <UserMinus className="shrink-0 w-5 aspect-square text-primary" />
             <div className="flex flex-col whitespace-nowrap">
