@@ -30,8 +30,8 @@ export function Sidebar({}: SidebarProps) {
   return (
     <aside
       className={cn(
-        "flex flex-col gap-5 h-screen top-0 py-4 px-2 sticky border-r",
-        isSidebarExpanded ? "w-64" : "w-16"
+        "flex flex-col gap-5 h-screen bg-white top-0 py-4 px-2 border-r",
+        isSidebarExpanded ? "fixed w-full z-10 md:sticky md:w-64" : "w-16"
       )}
     >
       <div className="flex items-center overflow-clip">

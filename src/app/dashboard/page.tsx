@@ -46,10 +46,9 @@ export default function Dashboard() {
     <>
       <div className="flex">
         <Sidebar />
-        <div className="w-full h-screen relative">
+        <div className="w-full h-screen overflow-scroll relative">
           <div
-            className="absolute top-1/2 left-1/2 w-full md:px-4 px-2"
-            style={{ transform: "translate(-50%, -50%)" }}
+            className="mt-8 md:mt-0 md:absolute md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 w-full md:px-4 px-2"
           >
             <h1 className="text-3xl text-center">Olá, {fullName}</h1>
             <h3 className="text-base text-center py-2 pb-4">Escolha um plano para começar:</h3>
@@ -58,8 +57,8 @@ export default function Dashboard() {
                 <TabsTrigger value="mensal">Mensal</TabsTrigger>
                 <TabsTrigger value="trimestral">Trimestral</TabsTrigger>
               </TabsList>
-              <TabsContent value="mensal" className="flex justify-center text-left gap-3">
-              <Card className="rounded-xl p-2">
+              <TabsContent value="mensal" className="flex justify-center text-left gap-3 flex-wrap">
+              <Card className="rounded-xl p-2 md:min-w-[390px] md:w-min w-full">
                   <CardHeader className="p-3">
                     <CardTitle className="text-base">
                       Plano{" "}
@@ -81,8 +80,10 @@ export default function Dashboard() {
                   </CardContent>
                   <CardFooter className="p-0 px-3 py-2">
                     <ul>
-                      <li className="flex items-center text-sm text-zinc-600 my-2 gap-2"><FaCheck className="bg-green-500 text-white p-1 rounded-full w-5 h-5"/> Receba um aplique mega hair mensamente</li>
-                      <li className="flex items-center text-sm text-zinc-600 my-2 gap-2"><FaCheck className="bg-green-500 text-white p-1 rounded-full w-5 h-5"/> Acesso a suporte prioritário</li>
+                      <li className="flex items-center text-xs md:text-sm text-zinc-600 my-2 gap-2"><FaCheck className="bg-green-500 text-white p-1 rounded-full w-5 h-5"/> Receba um aplique mega hair mensamente</li>
+                      <li className="flex items-center text-xs md:text-sm text-zinc-600 my-2 gap-2"><FaCheck className="bg-green-500 text-white p-1 rounded-full w-5 h-5"/> Acesso a suporte prioritário</li>
+                      <li className="flex items-center text-xs md:text-sm text-zinc-600 my-2 gap-2"><FaXmark className="bg-red-500 text-white p-1 rounded-full w-5 h-5"/> Suporte prioritário</li>
+                      <li className="flex items-center text-xs md:text-sm text-zinc-600 my-2 gap-2"><FaCheck className="bg-green-500 text-white p-1 rounded-full w-5 h-5"/> Entrega garantida</li>
                     </ul>
                   </CardFooter>
                 </Card>
