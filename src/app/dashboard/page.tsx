@@ -12,10 +12,25 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Check, CheckCheckIcon, CheckIcon } from "lucide-react";
 import { FaCheck, FaXmark } from "react-icons/fa6";
+import PaymentForm from "./components/PaymentForm";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
+);
 
 export default function Dashboard() {
   const [fullName, setFullName] = useState("");
@@ -56,7 +71,7 @@ export default function Dashboard() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ priceId: 'price_12345' }), // Substitua com o price_id correto
+        body: JSON.stringify({ priceId: 'price_1OVN1yFkEPvpDr1CuhqDxcg9' }), // Substitua com o price_id correto
       });
 
       if (!response.ok) {
@@ -112,13 +127,19 @@ export default function Dashboard() {
                   </CardHeader>
                   <Separator className="w-11/12 bg-zinc-200 mx-auto" />
                   <CardContent className="p-0 px-3 pt-4">
-                    <button className="bg-rose-400 hover:bg-pink-500 hover:-translate-y-px transition w-full py-2 rounded text-white font-light"
-                      onClick={handleCreateSubscription}
-                      disabled={loading}
-                    >
-                      {loading ? "Processando..." : "Assine Agora"}
-                    </button>
-                    {error && <p style={{ color: "red" }}>{error}</p>}
+                    <Dialog>
+                      <DialogTrigger className="bg-rose-400 hover:bg-pink-500 hover:-translate-y-px transition w-full py-2 rounded text-white font-light">Open</DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Assinatura</DialogTitle>
+                          <DialogDescription>
+                          <Elements stripe={stripePromise}>
+                            <PaymentForm />
+                          </Elements>
+                          </DialogDescription>
+                        </DialogHeader>
+                      </DialogContent>
+                    </Dialog>
                   </CardContent>
                   <CardFooter className="p-0 px-3 py-2">
                     <ul>
