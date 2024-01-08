@@ -74,6 +74,20 @@ export default async function handler(req, res) {
           message: "Subscription successfully initiated",
           clientSecret: subscription.latest_invoice.payment_intent.client_secret,
         });
+
+        try {
+          const { data, error } = await supabase
+            .from('profiles')
+            .insert([
+              { coluna1: 'valor1', coluna2: 'valor2', /* outros dados */ },
+            ]);
+      
+          if (error) throw error;
+          // Adicionalmente, você pode responder ou registrar o sucesso da inserção
+      } catch (error) {
+          console.error('Erro ao inserir dados no Supabase', error);
+          // Você pode escolher lidar com esse erro de alguma forma específica
+      }
       } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Internal server error" });
