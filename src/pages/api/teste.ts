@@ -38,8 +38,7 @@ export default async function handler(
     try {
       const { data, error } = await supabase
         .from("subscription")
-        .insert({ subscription_date: "teste2" })
-        .match({ id: userId });
+        .upsert({ id: userId, subscription_date: "teste2" })
 
       if (error) {
         throw error;
