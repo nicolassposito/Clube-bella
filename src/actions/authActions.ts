@@ -52,7 +52,7 @@ export async function signUp({email, password, fullname}: Register) {
       const { data, error } = await supabase
           .from('profiles')
           .insert([
-              { id: user?.id, fullname: fullname },
+              { id: user?.id, fullname: fullname, subscription_date: '' },
           ]);
 
     console.log(data, error);

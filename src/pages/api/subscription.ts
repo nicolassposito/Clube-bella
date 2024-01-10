@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { createServerClient } from '@supabase/ssr';
+import { createClient } from '@supabase/supabase-js'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2023-10-16',
@@ -10,16 +10,10 @@ export default async function handler(
   req: NextApiRequest, 
   res: NextApiResponse
 ) {
-  const supabase = createServerClient(
+  
+  const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return req.cookies[name];
-        },
-      },
-    }
   );
 
   try {
@@ -76,15 +70,21 @@ export default async function handler(
 
     try {
       const { data, error } = await supabase
-        .from('profiles')
-        .insert({ subscription_date: dataFutura.toISOString().split('T')[0] })
-        .match({ id: userId });
-  
-      if (error) throw error;
-      console.log('Data de subscrição atualizada:', data);
-  } catch (error) {
-      console.error('Erro ao atualizar a data de subscrição no Supabase', error);
-  }
+            .from('teste')
+            .select('valor')
+
+        if (error) {
+            throw error;
+        }
+
+        if (data.length === 0) {
+            console.log('Nenhum dado encontrado - verifique se a tabela está correta');
+        } else {
+            console.log('Conexão com o Supabase bem-sucedida:', data);
+        }
+    } catch (error) {
+        console.error('Erro ao conectar com o Supabase:', error);
+    }
 
   } catch (err) {
     console.error(err);

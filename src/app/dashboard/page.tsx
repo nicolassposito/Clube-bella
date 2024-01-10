@@ -2,8 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { Sidebar } from "@/components/sidebar";
-import { cookies } from "next/headers";
-import { createClient } from "@supabase/supabase-js";
 import {
   Card,
   CardContent,
@@ -22,11 +20,11 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
-import { Check, CheckCheckIcon, CheckIcon } from "lucide-react";
 import { FaCheck, FaXmark } from "react-icons/fa6";
 import PaymentForm from "./components/PaymentForm";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
@@ -34,18 +32,17 @@ const stripePromise = loadStripe(
 
 export default function Dashboard() {
   const [fullName, setFullName] = useState("");
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+  const supabase = createClientComponentClient()
+  
 
   useEffect(() => {
-    // Função para buscar o nome completo do usuário
     const fetchFullName = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
       const { data, error } = await supabase
         .from("profiles")
         .select("fullname")
-        .single();
+        .match({ id: user?.id })
+        .single()
 
       if (error) {
         console.error("Erro ao buscar o nome completo", error);
@@ -80,7 +77,6 @@ export default function Dashboard() {
 
       const data = await response.json();
       console.log('Sucesso:', data);
-      // Trate a resposta, como redirecionar o usuário ou mostrar confirmação
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);

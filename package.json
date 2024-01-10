@@ -42,6 +42,7 @@
     "class-variance-authority": "^0.7.0",
     "clipboard": "^2.0.11",
     "clsx": "^2.0.0",
+    "cookies-next": "^4.1.0",
     "date-fns": "^3.0.6",
     "embla-carousel-react": "^8.0.0-rc17",
     "lucide-react": "^0.302.0",
