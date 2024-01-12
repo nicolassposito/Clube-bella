@@ -12,37 +12,6 @@ function PaymentForm(): JSX.Element {
     const stripe = useStripe();
     const elements = useElements();
 
-    const Teste = async () => {
-        try {
-            const supabase = createClientComponentClient()
-            const { data: { user } } = await supabase.auth.getUser()
-            const session = await supabase.auth.getSession();
-            const token = session.data.session?.access_token;
-            if (!user?.id) {
-                throw new Error("User not found");
-            }
-
-            const response = await fetch("/api/teste", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    userId: user.id,
-                }),
-            });
-
-            if (!response.ok) throw new Error("Ruim!");
-
-            const data = await response.json();
-
-            alert("Bom!");
-        } catch (err: any) {
-            console.error(err);
-        }
-    }
-
     const createSubscription = async () => {
         try {
             if (!stripe || !elements) {
@@ -51,6 +20,8 @@ function PaymentForm(): JSX.Element {
 
             const supabase = createClientComponentClient()
             const { data: { user } } = await supabase.auth.getUser()
+            const session = await supabase.auth.getSession();
+            const token = session.data.session?.access_token;
             if (!user?.id) {
                 throw new Error("User not found");
             }
@@ -73,6 +44,7 @@ function PaymentForm(): JSX.Element {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    'Authorization': `Bearer ${token}`,
                 },
                 body: JSON.stringify({
                     name,
@@ -113,9 +85,8 @@ function PaymentForm(): JSX.Element {
         <br />
         <CardElement />
         <br />
-        <button onClick={createSubscription}>Subscribe - 5 INR</button>
+        <button onClick={createSubscription}>Assinar</button>
         <br></br>
-        <button onClick={Teste}>Teste</button>
       </div>
     );
 }

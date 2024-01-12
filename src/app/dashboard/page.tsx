@@ -124,7 +124,7 @@ export default function Dashboard() {
                   <Separator className="w-11/12 bg-zinc-200 mx-auto" />
                   <CardContent className="p-0 px-3 pt-4">
                     <Dialog>
-                      <DialogTrigger className="bg-rose-400 hover:bg-pink-500 hover:-translate-y-px transition w-full py-2 rounded text-white font-light">Open</DialogTrigger>
+                      <DialogTrigger className="bg-rose-400 hover:bg-pink-500 hover:-translate-y-px transition w-full py-2 rounded text-white font-light">Assinar</DialogTrigger>
                       <DialogContent>
                         <DialogHeader>
                           <DialogTitle>Assinatura</DialogTitle>
