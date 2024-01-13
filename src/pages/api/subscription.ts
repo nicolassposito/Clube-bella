@@ -9,19 +9,15 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   typescript: true,
 });
 
-
-
 export default async function handler(
   req: NextApiRequest, 
   res: NextApiResponse
 ) {
-  const token = req.headers.authorization?.split(" ")[1];
-  const { userId } = req.body;
-  
 
-  if (!token) {
-    return res.status(401).json({ error: 'No token provided' });
-  }
+  const token = req.headers.authorization?.split(" ")[1];
+  console.log("Token recebido:", token);
+  console.log("Headers:", req.headers);
+
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -31,6 +27,12 @@ export default async function handler(
       },
     }
   );
+
+  if (!token) {
+    return res.status(401).json({ error: 'No token provided' });
+  }
+  
+  const { userId } = req.body;
 
   try {
     if (req.method !== "POST") {
@@ -82,13 +84,10 @@ export default async function handler(
       clientSecret: paymentIntent.client_secret,
     });
 
-    const dataFutura = new Date();
-    dataFutura.setDate(dataFutura.getDate() + 30);
-
     try {
       const { data, error } = await supabase
         .from("subscription")
-        .upsert({ id: userId, subscription_date: dataFutura.toISOString().split('T')[0] })
+        .upsert({ id: userId, stripe_id: customer.id, session: token })
 
       if (error) {
         throw error;
@@ -104,6 +103,7 @@ export default async function handler(
     } catch (error) {
       console.error("Erro ao conectar com o Supabase:", error);
     }
+
 
   } catch (err) {
     console.error(err);
