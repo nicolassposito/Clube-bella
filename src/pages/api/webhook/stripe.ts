@@ -1,3 +1,5 @@
+"use server"
+
 import type { NextApiRequest, NextApiResponse } from 'next';
 import Stripe from 'stripe';
 import getRawBody from 'raw-body';
@@ -37,12 +39,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   switch (event.type) {
     case 'payment_intent.succeeded':
-      // console.log("HAHAHAHAHAHAHA");
-      // console.log(event.data.object.customer);
-      //   console.log("Evento de pagamento bem-sucedido recebido", event);
+      console.log("HAHAHAHAHAHAHA");
+        console.log("Evento de pagamento bem-sucedido recebido", event);
         const { data, error } = await supabase
-        .from("teste")
-        .select('id, stripe_id, session')
+        .from("subscription")
+        .select('id, stripe_id, session, subscription_type')
         .eq('stripe_id', event.data.object.customer)
 
         if (error) throw error;
@@ -54,6 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const userId = data[0].id;
         const stripeId = data[0].stripe_id;
         const sessionToken = data[0].session;
+        const subscriptionType = data[0].subscription_type;
         const supabaseAlt = createClient(
           process.env.NEXT_PUBLIC_SUPABASE_URL!,
           process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -66,17 +68,41 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         const dataFutura = new Date();
         dataFutura.setDate(dataFutura.getDate() + 30);
-        const { data: dataAlt, error: errorAlt } = await supabaseAlt
-        .from("subscription")
-        .upsert({ id: userId, stripe_id: stripeId, session: sessionToken, subscription_date: dataFutura.toISOString().split('T')[0] })
-        .eq('id', userId);
 
-      if (errorAlt) {
-        // throw errorAlt;
-        console.log("SupabaseAlt erro", errorAlt)
-      } else{
-        console.log("SupabaseAlt sucesso", dataAlt)
-      }
+        switch (subscriptionType) {
+          case "price_1OVN1yFkEPvpDr1CuhqDxcg9":
+            {
+              console.log("Assinatura Mega Hair");
+              const { data: dataAlt, error: errorAlt } = await supabaseAlt
+                .from("subscription_mega_mes")
+                .upsert({ id: userId, subscription_date: dataFutura.toISOString().split('T')[0], stripe_id: stripeId })
+                .eq('id', userId);
+        
+              if (errorAlt) {
+                console.log("SupabaseAlt erro", errorAlt)
+              } else {
+                console.log("SupabaseAlt sucesso", dataAlt)
+              }
+            }
+            break;
+            case "price_1OYH8ZFkEPvpDr1C1O2fWptp":
+              {
+                console.log("Assinatura Lace Wig");
+                const { data: dataAlt, error: errorAlt } = await supabaseAlt
+                  .from("subscription_lace_mes")
+                  .upsert({ id: userId, subscription_date: dataFutura.toISOString().split('T')[0], stripe_id: stripeId })
+                  .eq('id', userId);
+          
+                if (errorAlt) {
+                  console.log("SupabaseAlt erro", errorAlt)
+                } else {
+                  console.log("SupabaseAlt sucesso", dataAlt)
+                }
+              }
+              break;
+          default:
+             return;
+          }
 
       if (error) {
         console.log(

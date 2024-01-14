@@ -32,14 +32,12 @@ export default async function handler(
     return res.status(401).json({ error: 'No token provided' });
   }
   
-  const { userId } = req.body;
-
   try {
     if (req.method !== "POST") {
       return res.status(400).json({ message: "Bad request" });
     }
 
-    const { name, email, userId , paymentMethod } = req.body;
+    const { name, email, userId, userEmail, paymentMethod, priceId } = req.body;
 
     const customer = await stripe.customers.create({
       email,
@@ -48,24 +46,25 @@ export default async function handler(
       invoice_settings: { default_payment_method: paymentMethod },
     });
 
-    const product = await stripe.products.create({
-      name: "Monthly subscription",
-    });
+    // const product = await stripe.products.create({
+    //   name: "Monthly subscription",
+    // });
 
     const subscription = await stripe.subscriptions.create({
       customer: customer.id,
-      items: [
-        {
-          price_data: {
-            currency: "BRL",
-            product: product.id,
-            unit_amount: 200,
-            recurring: {
-              interval: "month",
-            },
-          },
-        },
-      ],
+      // items: [
+      //   // {
+      //   //   price_data: {
+      //   //     currency: "BRL",
+      //   //     product: product.id,
+      //   //     unit_amount: 200,
+      //   //     recurring: {
+      //   //       interval: "month",
+      //   //     },
+      //   //   },
+      //   // },
+      // ],
+      items: [{ price: priceId }],
       payment_settings: {
         payment_method_types: ["card"],
       },
@@ -87,7 +86,7 @@ export default async function handler(
     try {
       const { data, error } = await supabase
         .from("subscription")
-        .upsert({ id: userId, stripe_id: customer.id, session: token })
+        .upsert({ id: userId, stripe_id: customer.id, session: token, subscription_type: priceId, stripe_email: customer.email, supabase_email: userEmail })
 
       if (error) {
         throw error;

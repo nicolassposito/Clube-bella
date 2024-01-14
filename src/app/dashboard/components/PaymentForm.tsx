@@ -6,7 +6,11 @@ import {
 } from "@stripe/react-stripe-js";
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
-function PaymentForm(): JSX.Element {
+interface PaymentFormProps {
+    priceId: string;
+  }
+
+  const PaymentForm: React.FC<PaymentFormProps> = ({ priceId }) => {
     const [name, setName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const stripe = useStripe();
@@ -50,7 +54,9 @@ function PaymentForm(): JSX.Element {
                     name,
                     email,
                     userId: user.id,
+                    userEmail: user.email,
                     paymentMethod: paymentMethodResponse.paymentMethod.id,
+                    priceId,
                 }),
             });
 

@@ -32,8 +32,8 @@ const stripePromise = loadStripe(
 
 export default function Dashboard() {
   const [fullName, setFullName] = useState("");
+  const [selectedPriceId, setSelectedPriceId] = useState("");
   const supabase = createClientComponentClient()
-  
 
   useEffect(() => {
     const fetchFullName = async () => {
@@ -55,38 +55,8 @@ export default function Dashboard() {
     fetchFullName();
   }, []);
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleCreateSubscription = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch('/api/subscription', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ priceId: 'price_1OVN1yFkEPvpDr1CuhqDxcg9' }), // Substitua com o price_id correto
-      });
-
-      if (!response.ok) {
-        throw new Error('Erro ao processar a solicitação de assinatura');
-      }
-
-      const data = await response.json();
-      console.log('Sucesso:', data);
-    } catch (error) {
-      if (error instanceof Error) {
-        setError(error.message);
-      } else {
-        setError('Ocorreu um erro desconhecido');
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+  const MENSAL_PRICE_ID_MEGA = "price_1OYY06FkEPvpDr1CP27NtZi3";
+  const MENSAL_PRICE_ID_LACE = "price_1OYXz1FkEPvpDr1Cd01yWGQT";
 
   return (
     <>
@@ -124,13 +94,64 @@ export default function Dashboard() {
                   <Separator className="w-11/12 bg-zinc-200 mx-auto" />
                   <CardContent className="p-0 px-3 pt-4">
                     <Dialog>
-                      <DialogTrigger className="bg-rose-400 hover:bg-pink-500 hover:-translate-y-px transition w-full py-2 rounded text-white font-light">Assinar</DialogTrigger>
+                      <DialogTrigger onClick={() => setSelectedPriceId(MENSAL_PRICE_ID_MEGA)} className="bg-rose-400 hover:bg-pink-500 hover:-translate-y-px transition w-full py-2 rounded text-white font-light">Assinar</DialogTrigger>
                       <DialogContent>
                         <DialogHeader>
                           <DialogTitle>Assinatura</DialogTitle>
                           <DialogDescription>
                           <Elements stripe={stripePromise}>
-                            <PaymentForm />
+                            <PaymentForm priceId={selectedPriceId}/>
+                          </Elements>
+                          </DialogDescription>
+                        </DialogHeader>
+                      </DialogContent>
+                    </Dialog>
+                  </CardContent>
+                  <CardFooter className="p-0 px-3 py-2">
+                    <ul>
+                      <li className="flex items-center text-xs md:text-sm text-zinc-600 my-2 gap-2">
+                        <FaCheck className="bg-green-500 text-white p-1 rounded-full w-5 h-5" />{" "}
+                        Receba um aplique mega hair mensamente
+                      </li>
+                      <li className="flex items-center text-xs md:text-sm text-zinc-600 my-2 gap-2">
+                        <FaCheck className="bg-green-500 text-white p-1 rounded-full w-5 h-5" />{" "}
+                        Acesso a suporte prioritário
+                      </li>
+                      <li className="flex items-center text-xs md:text-sm text-zinc-600 my-2 gap-2">
+                        <FaXmark className="bg-red-500 text-white p-1 rounded-full w-5 h-5" />{" "}
+                        Suporte prioritário
+                      </li>
+                      <li className="flex items-center text-xs md:text-sm text-zinc-600 my-2 gap-2">
+                        <FaCheck className="bg-green-500 text-white p-1 rounded-full w-5 h-5" />{" "}
+                        Entrega garantida
+                      </li>
+                    </ul>
+                  </CardFooter>
+                </Card>
+                <Card className="rounded-xl p-2 md:min-w-[390px] md:w-min w-full">
+                  <CardHeader className="p-3">
+                    <CardTitle className="text-base">
+                      Plano{" "}
+                      <span style={{ color: "var(--primary)" }}>Lace Wig</span>
+                    </CardTitle>
+                    <CardDescription className="text-3xl font-semibold text-zinc-800 py-1 relative">
+                      <span className="text-base absolute">R$</span>{" "}
+                      <span className="ml-6">96,90</span>
+                    </CardDescription>
+                    <span className="text-xs text-zinc-500">
+                      Pagamento mensal
+                    </span>
+                  </CardHeader>
+                  <Separator className="w-11/12 bg-zinc-200 mx-auto" />
+                  <CardContent className="p-0 px-3 pt-4">
+                    <Dialog>
+                      <DialogTrigger onClick={() => setSelectedPriceId(MENSAL_PRICE_ID_LACE)} className="bg-rose-400 hover:bg-pink-500 hover:-translate-y-px transition w-full py-2 rounded text-white font-light">Assinar</DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Assinatura</DialogTitle>
+                          <DialogDescription>
+                          <Elements stripe={stripePromise}>
+                            <PaymentForm priceId={selectedPriceId}/>
                           </Elements>
                           </DialogDescription>
                         </DialogHeader>
