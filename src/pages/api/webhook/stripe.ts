@@ -56,6 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const stripeId = data[0].stripe_id;
         const sessionToken = data[0].session;
         const subscriptionType = data[0].subscription_type;
+        console.log("BABABABABA", subscriptionType)
         const supabaseAlt = createClient(
           process.env.NEXT_PUBLIC_SUPABASE_URL!,
           process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -70,7 +71,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         dataFutura.setDate(dataFutura.getDate() + 30);
 
         switch (subscriptionType) {
-          case "price_1OVN1yFkEPvpDr1CuhqDxcg9":
+          case "price_1OYY06FkEPvpDr1CP27NtZi3":
             {
               console.log("Assinatura Mega Hair");
               const { data: dataAlt, error: errorAlt } = await supabaseAlt
@@ -85,7 +86,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               }
             }
             break;
-            case "price_1OYH8ZFkEPvpDr1C1O2fWptp":
+            case "price_1OYXz1FkEPvpDr1Cd01yWGQT":
               {
                 console.log("Assinatura Lace Wig");
                 const { data: dataAlt, error: errorAlt } = await supabaseAlt
@@ -101,7 +102,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               }
               break;
           default:
-             return;
+             console.log("nenhuma assinatura retornada");
           }
 
       if (error) {

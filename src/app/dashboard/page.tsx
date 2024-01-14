@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Sidebar } from "@/components/sidebar";
 import {
   Card,
@@ -25,6 +25,9 @@ import PaymentForm from "./components/PaymentForm";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { Info, InfoIcon } from "lucide-react";
+import Link from "next/link";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
@@ -33,7 +36,26 @@ const stripePromise = loadStripe(
 export default function Dashboard() {
   const [fullName, setFullName] = useState("");
   const [selectedPriceId, setSelectedPriceId] = useState("");
+  const [subsnum, setSubsnum] = useState(0);
+  const [serverTime, setServerTime] = useState(new Date());
+  const [megahair, setMegahair] = useState(false);
+  const [lacewig, setLaceWig] = useState(false);
   const supabase = createClientComponentClient()
+  const supabaseCheck = createClientComponentClient()
+
+  useEffect(() => {
+    const fetchServerTime = async () => {
+      try {
+        const response = await fetch('/api/date');
+        const data = await response.json();
+        setServerTime(new Date(data.time));
+      } catch (error) {
+        console.error('Erro ao buscar a hora do servidor: ', error);
+      }
+    };
+
+    fetchServerTime();
+  }, []);
 
   useEffect(() => {
     const fetchFullName = async () => {
@@ -53,20 +75,75 @@ export default function Dashboard() {
     };
 
     fetchFullName();
+
+    const checkSubscription = async () => {
+      try {
+      const { data: { user } } = await supabase.auth.getUser()
+      let { data: laceData, error: laceError } = await supabase
+          .from('subscription_lace_mes')
+          .select('subscription_date')
+          .eq('id', user?.id)
+    
+        if (laceError) throw laceError;
+    
+        if (laceData && laceData.length > 0) {
+          const subscriptionDate = new Date(laceData[0].subscription_date);
+          if (serverTime < subscriptionDate) {
+            setSubsnum(prev => prev + 1 / 2);
+            setLaceWig(true);
+          console.log(lacewig);
+        }
+        }
+    
+        let { data: megaData, error: megaError } = await supabase
+          .from('subscription_mega_mes')
+          .select('subscription_date')
+          .eq('id', user?.id)
+    
+        if (megaError) throw megaError;
+    
+        if (megaData && megaData.length > 0) {
+          const subscriptionDate = new Date(megaData[0].subscription_date);
+          if (serverTime < subscriptionDate) {
+            setSubsnum(prev => prev + 1 / 2);
+            setMegahair(true);
+          }
+          console.log(megahair);
+  }
+      } catch (error) {
+        console.error('Erro na consulta: ', error);
+      }
+  };
+
+
+    checkSubscription();
   }, []);
 
   const MENSAL_PRICE_ID_MEGA = "price_1OYY06FkEPvpDr1CP27NtZi3";
   const MENSAL_PRICE_ID_LACE = "price_1OYXz1FkEPvpDr1Cd01yWGQT";
 
+  const isDisabledMega = megahair;
+  const isDisabledLace = lacewig;
+  const buttonClassNamesMega  = isDisabledMega ? "bg-rose-300 before:content-['Assinado'] w-full py-2 rounded text-white font-light" : "bg-rose-400 hover:bg-pink-500 before:content-['Assinar'] hover:-translate-y-px transition w-full py-2 rounded text-white font-light";
+  const buttonClassNamesLace  = isDisabledLace ? "bg-rose-300 before:content-['Assinado'] w-full py-2 rounded text-white font-light" : "bg-rose-400 hover:bg-pink-500 before:content-['Assinar'] hover:-translate-y-px transition w-full py-2 rounded text-white font-light";
   return (
     <>
       <div className="flex">
         <Sidebar />
         <div className="w-full h-screen overflow-scroll relative">
-          <div className="mt-8 md:mt-0 md:absolute md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 w-full md:px-4 px-2">
+          <div className="text-center p-4">
+            <Alert className="text-center inline-block max-w-md p-2 md:p-4">
+              <Info className="!text-pink-500" size={20} />
+              <AlertTitle>Você tem {subsnum} planos ativos.</AlertTitle>
+              <AlertDescription>
+                Clique <Link className="text-pink-500" href='#'>aqui</Link> para saber mais
+              </AlertDescription>
+            </Alert>
+          </div>
+          <div className="mt-8 md:mt-20 lg:mt-0 md:absolute md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 w-full md:px-4 px-2">
             <h1 className="text-3xl text-center">Olá, {fullName}</h1>
             <h3 className="text-base text-center py-2 pb-4">
-              Escolha um plano para começar:
+              Planos disponíveis para assinatura:
             </h3>
             <Tabs defaultValue="mensal" className="w-full text-center">
               <TabsList>
@@ -94,14 +171,19 @@ export default function Dashboard() {
                   <Separator className="w-11/12 bg-zinc-200 mx-auto" />
                   <CardContent className="p-0 px-3 pt-4">
                     <Dialog>
-                      <DialogTrigger onClick={() => setSelectedPriceId(MENSAL_PRICE_ID_MEGA)} className="bg-rose-400 hover:bg-pink-500 hover:-translate-y-px transition w-full py-2 rounded text-white font-light">Assinar</DialogTrigger>
+                      <DialogTrigger
+                        onClick={() => setSelectedPriceId(MENSAL_PRICE_ID_MEGA)}
+                        className={buttonClassNamesMega}
+                        disabled={megahair}
+                      >
+                      </DialogTrigger>
                       <DialogContent>
                         <DialogHeader>
                           <DialogTitle>Assinatura</DialogTitle>
                           <DialogDescription>
-                          <Elements stripe={stripePromise}>
-                            <PaymentForm priceId={selectedPriceId}/>
-                          </Elements>
+                            <Elements stripe={stripePromise}>
+                              <PaymentForm priceId={selectedPriceId} />
+                            </Elements>
                           </DialogDescription>
                         </DialogHeader>
                       </DialogContent>
@@ -145,14 +227,19 @@ export default function Dashboard() {
                   <Separator className="w-11/12 bg-zinc-200 mx-auto" />
                   <CardContent className="p-0 px-3 pt-4">
                     <Dialog>
-                      <DialogTrigger onClick={() => setSelectedPriceId(MENSAL_PRICE_ID_LACE)} className="bg-rose-400 hover:bg-pink-500 hover:-translate-y-px transition w-full py-2 rounded text-white font-light">Assinar</DialogTrigger>
+                     <DialogTrigger
+                        onClick={() => setSelectedPriceId(MENSAL_PRICE_ID_LACE)}
+                        className={buttonClassNamesLace}
+                        disabled={lacewig}
+                      >
+                      </DialogTrigger>
                       <DialogContent>
                         <DialogHeader>
                           <DialogTitle>Assinatura</DialogTitle>
                           <DialogDescription>
-                          <Elements stripe={stripePromise}>
-                            <PaymentForm priceId={selectedPriceId}/>
-                          </Elements>
+                            <Elements stripe={stripePromise}>
+                              <PaymentForm priceId={selectedPriceId} />
+                            </Elements>
                           </DialogDescription>
                         </DialogHeader>
                       </DialogContent>
@@ -162,7 +249,7 @@ export default function Dashboard() {
                     <ul>
                       <li className="flex items-center text-xs md:text-sm text-zinc-600 my-2 gap-2">
                         <FaCheck className="bg-green-500 text-white p-1 rounded-full w-5 h-5" />{" "}
-                        Receba um aplique mega hair mensamente
+                        Receba um aplique lace wig mensamente
                       </li>
                       <li className="flex items-center text-xs md:text-sm text-zinc-600 my-2 gap-2">
                         <FaCheck className="bg-green-500 text-white p-1 rounded-full w-5 h-5" />{" "}
