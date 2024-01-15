@@ -89,7 +89,7 @@ export default function Dashboard() {
         if (laceData && laceData.length > 0) {
           const subscriptionDate = new Date(laceData[0].subscription_date);
           if (serverTime < subscriptionDate) {
-            setSubsnum(prev => prev + 1 / 2);
+            setSubsnum(prev => prev + 1);
             setLaceWig(true);
           console.log(lacewig);
         }
@@ -105,7 +105,7 @@ export default function Dashboard() {
         if (megaData && megaData.length > 0) {
           const subscriptionDate = new Date(megaData[0].subscription_date);
           if (serverTime < subscriptionDate) {
-            setSubsnum(prev => prev + 1 / 2);
+            setSubsnum(prev => prev + 1);
             setMegahair(true);
           }
           console.log(megahair);
@@ -148,7 +148,7 @@ export default function Dashboard() {
             <Tabs defaultValue="mensal" className="w-full text-center">
               <TabsList>
                 <TabsTrigger value="mensal">Mensal</TabsTrigger>
-                <TabsTrigger value="trimestral">Trimestral</TabsTrigger>
+                <TabsTrigger disabled value="trimestral">Trimestral</TabsTrigger>
               </TabsList>
               <TabsContent
                 value="mensal"

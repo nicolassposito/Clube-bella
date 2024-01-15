@@ -74,8 +74,8 @@ interface PaymentFormProps {
     };
 
     return (
-        <div style={{ width: "40%" }}>
-        Name:{" "}
+        <div>
+        Nome:{" "}
         <input
           type="text"
           value={name}
