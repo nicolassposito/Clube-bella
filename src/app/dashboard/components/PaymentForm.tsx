@@ -74,25 +74,29 @@ interface PaymentFormProps {
     };
 
     return (
-        <div>
+        <div className="flex flex-col text-sm gap-2">
+        <div className="flex flex-col gap-0.5">
         Nome:{" "}
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          className="bg-zinc-100 rounded p-1.5 text-base"
+          placeholder="Maria"
         />
-        <br />
+        </div>
+        <div className="flex flex-col gap-0.5">
         Email:{" "}
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          className="bg-zinc-100 rounded p-1.5 text-base"
+          placeholder="exemplo@email.com"
         />
-        <br />
-        <CardElement />
-        <br />
-        <button onClick={createSubscription}>Assinar</button>
-        <br></br>
+        </div>
+        <CardElement className="bg-zinc-100 p-1.5 rounded font-light" />
+        <button className="bg-rose-400 hover:brightness-95 transition text-white rounded py-2" onClick={createSubscription}>Assinar</button>
       </div>
     );
 }

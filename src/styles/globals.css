@@ -83,4 +83,5 @@
 
 body{
   font-family: 'Poppins', sans-serif !important;
+  font-family: '__Poppins_d3e56f', '__Poppins_Fallback_d3e56f' !important;
 }
