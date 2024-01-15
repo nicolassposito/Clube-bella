@@ -241,13 +241,21 @@ export default function Dashboard() {
                         disabled={lacewig}
                       >
                       </DialogTrigger>
-                      <DialogContent>
+                      <DialogContent className="p-8 !rounded-sm">
                         <DialogHeader>
                           <DialogTitle>Assinatura</DialogTitle>
-                          <DialogDescription>
+                          <DialogDescription className="flex items-center">
                             <Elements stripe={stripePromise}>
                               <PaymentForm priceId={selectedPriceId} />
                             </Elements>
+                            <div className="text-center w-full p-2 mb-4">
+                              <p className="font-semibold text-zinc-700 text-xl">Plano <span className="text-pink-400">Lace Wig</span></p>
+                            <div className="text-4xl font-semibold text-zinc-800 py-1 relative">
+                              <span className="text-lg absolute">R$</span>{" "}
+                              <span className="ml-6">96,90</span>
+                            </div>
+                            <p className="text-md">Pagamento mensal</p>
+                            </div>
                           </DialogDescription>
                         </DialogHeader>
                       </DialogContent>

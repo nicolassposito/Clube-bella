@@ -5,6 +5,7 @@ import {
     useStripe,
 } from "@stripe/react-stripe-js";
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import '..//style.css'
 
 interface PaymentFormProps {
     priceId: string;
@@ -95,7 +96,7 @@ interface PaymentFormProps {
           placeholder="exemplo@email.com"
         />
         </div>
-        <CardElement className="bg-zinc-100 p-1.5 rounded font-light" />
+        <CardElement className="cardelement bg-zinc-100 p-1.5 rounded font-light" />
         <button className="bg-rose-400 hover:brightness-95 transition text-white rounded py-2" onClick={createSubscription}>Assinar</button>
       </div>
     );
