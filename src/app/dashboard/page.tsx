@@ -28,7 +28,7 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Info, InfoIcon } from "lucide-react";
 import Link from "next/link";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { isLogged } from "./isLogged";
+import { useIsLogged } from "./useIsLogged";
 
   const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
@@ -36,7 +36,7 @@ import { isLogged } from "./isLogged";
 
 
 export default function Dashboard() {
-  isLogged();
+  useIsLogged();
   const [fullName, setFullName] = useState("");
   const [selectedPriceId, setSelectedPriceId] = useState("");
   const [subsnum, setSubsnum] = useState(0);
