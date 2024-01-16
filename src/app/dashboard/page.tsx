@@ -28,12 +28,15 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Info, InfoIcon } from "lucide-react";
 import Link from "next/link";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { isLogged } from "./isLogged";
 
-const stripePromise = loadStripe(
+  const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
 );
 
+
 export default function Dashboard() {
+  isLogged();
   const [fullName, setFullName] = useState("");
   const [selectedPriceId, setSelectedPriceId] = useState("");
   const [subsnum, setSubsnum] = useState(0);
@@ -41,7 +44,6 @@ export default function Dashboard() {
   const [megahair, setMegahair] = useState(false);
   const [lacewig, setLaceWig] = useState(false);
   const supabase = createClientComponentClient()
-  const supabaseCheck = createClientComponentClient()
 
   useEffect(() => {
     const fetchServerTime = async () => {
@@ -140,7 +142,7 @@ export default function Dashboard() {
               </AlertDescription>
             </Alert>
           </div>
-          <div className="mt-8 md:mt-20 lg:mt-0 md:absolute md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 w-full md:px-4 px-2">
+          <div className="mt-8 md:mt-20 lg:mt-0 lg:absolute lg:top-1/2 lg:left-1/2 lg:transform lg:-translate-x-1/2 lg:-translate-y-1/2 w-full lg:px-4 px-2">
             <h1 className="text-3xl text-center">Olá, {fullName}</h1>
             <h3 className="text-base text-center py-2 pb-4">
               Planos disponíveis para assinatura:

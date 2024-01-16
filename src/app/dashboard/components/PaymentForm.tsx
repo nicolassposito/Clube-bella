@@ -1,6 +1,9 @@
 import React, { useState, ChangeEvent } from "react";
 import {
+    CardCvcElement,
     CardElement,
+    CardNumberElement,
+    CardExpiryElement,
     useElements,
     useStripe,
 } from "@stripe/react-stripe-js";
@@ -16,6 +19,22 @@ interface PaymentFormProps {
     const [email, setEmail] = useState<string>("");
     const stripe = useStripe();
     const elements = useElements();
+
+    const CARD_ELEMENT_OPTIONS = {
+        style: {
+            base: {
+                fontSize: '17px', // Ajuste o tamanho conforme necessário
+                padding: '5px',
+                '::placeholder': {
+                    color: '#aab7c4',
+                },
+            },
+            invalid: {
+                color: '#fa755a',
+                iconColor: '#fa755a',
+            },
+        },
+    };
 
     const createSubscription = async () => {
         try {
@@ -96,7 +115,19 @@ interface PaymentFormProps {
           placeholder="exemplo@email.com"
         />
         </div>
-        <CardElement className="cardelement bg-zinc-100 p-1.5 rounded font-light" />
+        <label>
+            Número do Cartão:
+            <CardNumberElement options={CARD_ELEMENT_OPTIONS} className="bg-zinc-100 p-1.5 rounded font-light" />
+        </label>
+        <label>
+            CVC:
+            <CardCvcElement options={CARD_ELEMENT_OPTIONS} className="bg-zinc-100 p-1.5 rounded font-light"/>
+        </label>
+        <label>
+            Validade:
+            <CardExpiryElement options={CARD_ELEMENT_OPTIONS} className="bg-zinc-100 p-1.5 rounded font-light"/>
+        </label>
+        
         <button className="bg-rose-400 hover:brightness-95 transition text-white rounded py-2" onClick={createSubscription}>Assinar</button>
       </div>
     );
