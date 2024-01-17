@@ -8,7 +8,6 @@ import {
     useStripe,
 } from "@stripe/react-stripe-js";
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import '..//style.css'
 
 interface PaymentFormProps {
     priceId: string;
