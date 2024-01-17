@@ -15,51 +15,35 @@ export default function Preferences() {
 
   const colors = [
     {
-      value: "Castanho Claro",
-      label: "Castanho Claro",
-    },
-    {
-      value: "Castanho Escuro",
+      value: "castanho_escuro",
       label: "Castanho Escuro",
     },
-    // Adicione mais cores se necessário
-  ];
-
-  const sizes = [
     {
-      value: "Pequeno",
-      label: "Pequeno",
+      value: "preto",
+      label: "Preto",
+    },
+  ]
+
+  const tamanhos = [
+    {
+      value: "50cm",
+      label: "50 Centimetros",
     },
     {
-      value: "Médio",
-      label: "Médio",
+      value: "60cm",
+      label: "60 Centimetros",
     },
     {
-      value: "Grande",
-      label: "Grande",
+      value: "70cm",
+      label: "70 Centimetros",
     },
-    // Adicione mais tamanhos se necessário
-  ];
+  ]
 
-  const [openColor, setOpenColor] = React.useState(false);
-  const [color, setColor] = React.useState("");
+  const [openColor, setOpenColor] = React.useState(false)
+  const [valueColor, setColorValue] = React.useState("")
 
-  const [openSize, setOpenSize] = React.useState(false);
-  const [size, setSize] = React.useState("");
-
-  const savePreference = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    try {
-      const { data, error } = await supabase
-        .from('preferences')
-        .upsert([{ id: user?.id, cor: color, tamanho: size }]);
-      
-      if (error) throw error;
-      console.log('Preference saved:', data);
-    } catch (error) {
-      console.error('Error saving preference:', error);
-    }
-  };
+  const [openSize, setOpenSize] = React.useState(false)
+  const [valueSize, setSizeValue] = React.useState("")
 
   return (
     <>
@@ -83,37 +67,32 @@ export default function Preferences() {
                       aria-expanded={openColor}
                       className="w-[200px] justify-between"
                     >
-                      {color
-                      ? colors.find((s) => {
-                          console.log(`Buscando cor: ${color}, encontrou: ${s.value}`);
-                          return s.value === color;
-                        })?.label
-                      : "Cor..."}
+                      {valueColor
+                        ? colors.find((framework) => framework.value === valueColor)?.label
+                        : "Selecione uma cor..."}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-[200px] p-0">
                     <Command>
-                      <CommandInput placeholder="Cor..." className="h-9" />
-                      <CommandEmpty>No color found.</CommandEmpty>
+                      <CommandInput placeholder="Search framework..." className="h-9" />
+                      <CommandEmpty>Não encontrado.</CommandEmpty>
                       <CommandGroup>
-                        {colors.map((s) => (
+                        {colors.map((framework) => (
                           <CommandItem
-                            key={s.value}
-                            value={s.value}
+                            key={framework.value}
+                            value={framework.value}
                             onSelect={(currentValue) => {
-                              const newColor = currentValue === color ? "" : currentValue;
-                              setColor(newColor);
-                              setOpenColor(false);
+                              setColorValue(currentValue === valueColor ? "" : currentValue)
+                              setOpenColor(false)
                             }}
                           >
-                            {s.label}
+                            {framework.label}
                           </CommandItem>
                         ))}
                       </CommandGroup>
                     </Command>
                   </PopoverContent>
                 </Popover>
-                <span>Tamanho:</span>
                 <Popover open={openSize} onOpenChange={setOpenSize}>
                   <PopoverTrigger asChild>
                     <Button
@@ -122,27 +101,26 @@ export default function Preferences() {
                       aria-expanded={openSize}
                       className="w-[200px] justify-between"
                     >
-                      {size
-                        ? sizes.find((s) => s.value === size)?.label
-                        : "Tamanho..."}
+                      {valueSize
+                        ? tamanhos.find((framework) => framework.value === valueSize)?.label
+                        : "Selecione um tamanho..."}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-[200px] p-0">
                     <Command>
-                      <CommandInput placeholder="Tamanho..." className="h-9" />
-                      <CommandEmpty>No size found.</CommandEmpty>
+                      <CommandInput placeholder="Search framework..." className="h-9" />
+                      <CommandEmpty>Não encontrado.</CommandEmpty>
                       <CommandGroup>
-                        {sizes.map((s) => (
+                        {tamanhos.map((framework) => (
                           <CommandItem
-                            key={s.value}
-                            value={s.value}
+                            key={framework.value}
+                            value={framework.value}
                             onSelect={(currentValue) => {
-                              const newSize = currentValue === size ? "" : currentValue;
-                              setSize(newSize);
-                              setOpenSize(false);
+                              setSizeValue(currentValue === valueSize ? "" : currentValue)
+                              setOpenSize(false)
                             }}
                           >
-                            {s.label}
+                            {framework.label}
                           </CommandItem>
                         ))}
                       </CommandGroup>
@@ -150,7 +128,6 @@ export default function Preferences() {
                   </PopoverContent>
                 </Popover>
               </div>
-              <Button onClick={savePreference}>Salvar Preferências</Button>
             </div>
           </div>
         </div>
