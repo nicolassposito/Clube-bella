@@ -18,6 +18,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { FaCheck, FaXmark } from "react-icons/fa6";
@@ -25,12 +36,12 @@ import PaymentForm from "./components/PaymentForm";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { Info, InfoIcon } from "lucide-react";
+import { Info, InfoIcon, X } from "lucide-react";
 import Link from "next/link";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { useIsLogged } from "./useIsLogged";
 
-  const stripePromise = loadStripe(
+const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
 );
 
@@ -80,42 +91,68 @@ export default function Dashboard() {
 
     const checkSubscription = async () => {
       try {
-      const { data: { user } } = await supabase.auth.getUser()
-      let { data: laceData, error: laceError } = await supabase
+        const { data: { user } } = await supabase.auth.getUser()
+        let { data: laceData, error: laceError } = await supabase
           .from('subscription_lace_mes')
           .select('subscription_date')
           .eq('id', user?.id)
-    
+
         if (laceError) throw laceError;
-    
+
         if (laceData && laceData.length > 0) {
           const subscriptionDate = new Date(laceData[0].subscription_date);
           if (serverTime < subscriptionDate) {
             setSubsnum(prev => prev + 1);
             setLaceWig(true);
-          console.log(lacewig);
+            console.log(lacewig);
+            let { data: laceData, error: laceError } = await supabase
+                .from('subscription_lace_mes')
+                .upsert({ id: user?.id, status: 'active' })
+
+                if(laceError){
+                  console.log(laceError);
+                } else{
+                  console.log(laceData);
+                }
+          } else{
+            let { data: laceData, error: laceError } = await supabase
+                .from('subscription_lace_mes')
+                .upsert({ id: user?.id, status: 'inactive' })
+          }
         }
-        }
-    
+
         let { data: megaData, error: megaError } = await supabase
           .from('subscription_mega_mes')
           .select('subscription_date')
           .eq('id', user?.id)
-    
+
         if (megaError) throw megaError;
-    
+
         if (megaData && megaData.length > 0) {
           const subscriptionDate = new Date(megaData[0].subscription_date);
           if (serverTime < subscriptionDate) {
             setSubsnum(prev => prev + 1);
             setMegahair(true);
-          }
           console.log(megahair);
-  }
+          let { data: megaData, error: megaError } = await supabase
+                .from('subscription_lace_mes')
+                .upsert({ id: user?.id, status: 'active' })
+
+                if(laceError){
+                  console.log(megaError);
+                } else{
+                  console.log(megaData);
+                }
+          } else{
+            let { data: megaData, error: megaError } = await supabase
+                .from('subscription_lace_mes')
+                .upsert({ id: user?.id, status: 'inactive' })
+          }
+        }
       } catch (error) {
         console.error('Erro na consulta: ', error);
       }
-  };
+    };
 
 
     checkSubscription();
@@ -126,8 +163,10 @@ export default function Dashboard() {
 
   const isDisabledMega = megahair;
   const isDisabledLace = lacewig;
-  const buttonClassNamesMega  = isDisabledMega ? "bg-rose-300 before:content-['Assinado'] w-full py-2 rounded text-white font-light" : "bg-rose-400 hover:bg-pink-500 before:content-['Assinar'] hover:-translate-y-px transition w-full py-2 rounded text-white font-light";
-  const buttonClassNamesLace  = isDisabledLace ? "bg-rose-300 before:content-['Assinado'] w-full py-2 rounded text-white font-light" : "bg-rose-400 hover:bg-pink-500 before:content-['Assinar'] hover:-translate-y-px transition w-full py-2 rounded text-white font-light";
+  const buttonClassNamesMega = isDisabledMega ? "bg-rose-300 before:content-['Assinado'] w-full py-2 rounded text-white font-light" : "bg-rose-400 hover:bg-pink-500 before:content-['Assinar'] hover:-translate-y-px transition w-full py-2 rounded text-white font-light";
+  const buttonClassNamesLace = isDisabledLace ? "bg-rose-300 before:content-['Assinado'] w-full py-2 rounded text-white font-light" : "bg-rose-400 hover:bg-pink-500 before:content-['Assinar'] hover:-translate-y-px transition w-full py-2 rounded text-white font-light";
+  
+  
   return (
     <>
       <div className="flex">
@@ -138,7 +177,25 @@ export default function Dashboard() {
               <Info className="!text-pink-500" size={20} />
               <AlertTitle>Você tem {subsnum} planos ativos.</AlertTitle>
               <AlertDescription>
-                Clique <Link className="text-pink-500" href='#'>aqui</Link> para saber mais
+                Clique <span className="text-pink-500 cursor-pointer">
+                  <AlertDialog>
+                    <AlertDialogTrigger>aqui</AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Planos ativos</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          <div className="border p-2 rounded">
+                            <p className="text-xl text-pink-400 font-semibold">Mega Hair adesivo</p>
+                            <span className=" p-1">plano mensal</span>
+                          </div>
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel className="bg-transparent border-0 absolute top-0 right-0  "><X /></AlertDialogCancel>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </span> para saber mais
               </AlertDescription>
             </Alert>
           </div>
@@ -188,11 +245,11 @@ export default function Dashboard() {
                             </Elements>
                             <div className="text-center w-full p-2 mb-4">
                               <p className="font-semibold text-zinc-700 text-xl">Plano <span className="text-pink-400">Mega Hair</span></p>
-                            <div className="text-4xl font-semibold text-zinc-800 py-1 relative">
-                              <span className="text-lg absolute">R$</span>{" "}
-                              <span className="ml-6">86,90</span>
-                            </div>
-                            <p className="text-md">Pagamento mensal</p>
+                              <div className="text-4xl font-semibold text-zinc-800 py-1 relative">
+                                <span className="text-lg absolute">R$</span>{" "}
+                                <span className="ml-6">86,90</span>
+                              </div>
+                              <p className="text-md">Pagamento mensal</p>
                             </div>
                           </DialogDescription>
                         </DialogHeader>
@@ -237,7 +294,7 @@ export default function Dashboard() {
                   <Separator className="w-11/12 bg-zinc-200 mx-auto" />
                   <CardContent className="p-0 px-3 pt-4">
                     <Dialog>
-                     <DialogTrigger
+                      <DialogTrigger
                         onClick={() => setSelectedPriceId(MENSAL_PRICE_ID_LACE)}
                         className={buttonClassNamesLace}
                         disabled={lacewig}
@@ -252,11 +309,11 @@ export default function Dashboard() {
                             </Elements>
                             <div className="text-center w-full p-2 mb-4">
                               <p className="font-semibold text-zinc-700 text-xl">Plano <span className="text-pink-400">Lace Wig</span></p>
-                            <div className="text-4xl font-semibold text-zinc-800 py-1 relative">
-                              <span className="text-lg absolute">R$</span>{" "}
-                              <span className="ml-6">96,90</span>
-                            </div>
-                            <p className="text-md">Pagamento mensal</p>
+                              <div className="text-4xl font-semibold text-zinc-800 py-1 relative">
+                                <span className="text-lg absolute">R$</span>{" "}
+                                <span className="ml-6">96,90</span>
+                              </div>
+                              <p className="text-md">Pagamento mensal</p>
                             </div>
                           </DialogDescription>
                         </DialogHeader>
