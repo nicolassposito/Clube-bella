@@ -70,7 +70,8 @@ export function Sidebar({}: SidebarProps) {
           </div>
           </div>
         </Link>
-        <Link href='/dashboard/troca' className="flex items-center gap-4 px-3 overflow-clip py-2 rounded sidebar-item">
+        <Link href='/dashboard/troca'>
+        <div className={`${getLinkClassName('/dashboard/troca')} flex items-center gap-4 px-3 overflow-clip py-2 rounded sidebar-item`}>
           <RefreshCcw className="shrink-0 w-5 aspect-square text-primary" />
           <div className="flex flex-col whitespace-nowrap">
             <span className="text-zinc-800 font-semibold text-sm">
@@ -79,6 +80,7 @@ export function Sidebar({}: SidebarProps) {
             <span className="text-xs text-muted-foreground">
               Solicitação de troca
             </span>
+          </div>
           </div>
         </Link>
 
