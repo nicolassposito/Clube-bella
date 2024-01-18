@@ -135,7 +135,7 @@ export default function Dashboard() {
             setMegahair(true);
           console.log(megahair);
           let { data: megaData, error: megaError } = await supabase
-                .from('subscription_lace_mes')
+                .from('subscription_mega_mes')
                 .upsert({ id: user?.id, status: 'active' })
 
                 if(laceError){
@@ -145,7 +145,7 @@ export default function Dashboard() {
                 }
           } else{
             let { data: megaData, error: megaError } = await supabase
-                .from('subscription_lace_mes')
+                .from('subscription_mega_mes')
                 .upsert({ id: user?.id, status: 'inactive' })
           }
         }

@@ -49,14 +49,21 @@ interface PaymentFormProps {
                 throw new Error("User not found");
             }
 
-            const cardElement = elements.getElement(CardElement);
-            if (!cardElement) {
-                throw new Error("Card element not found");
-            }
+            const cardNumberElement = elements.getElement(CardNumberElement);
+        const cardExpiryElement = elements.getElement(CardExpiryElement);
+        const cardCvcElement = elements.getElement(CardCvcElement);
+
+        if (!cardNumberElement || !cardExpiryElement || !cardCvcElement) {
+            throw new Error("Card details elements not found");
+        }
 
             const paymentMethodResponse = await stripe.createPaymentMethod({
                 type: "card",
-                card: cardElement,
+                card: cardNumberElement,
+                billing_details: {
+                    name: name,
+                    email: email,
+                },
             });
 
             if (paymentMethodResponse.error) {
