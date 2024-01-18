@@ -137,8 +137,8 @@ export default function Preferences() {
               <p>Certifique-se de escolher a opção que mais te agrada 😁.</p>
             </div>
             <div className="inline-flex flex-col gap-4 items-center">
-              <div className="inline-flex mt-4 p-3 rounded-xl flex-col items-center border gap-2 w-fit">
-                <div className="flex flex-col items-center gap-3 flex-wrap">
+              <div className="inline-flex mt-4 p-2 md:p-3 rounded-xl flex-col items-center border gap-2 w-fit">
+                <div className="flex flex-col items-left gap-3 flex-wrap">
                   <div className="flex flex-wrap gap-2 items-center">
                     <span>Cor:</span>
                     <Popover open={openColor} onOpenChange={setOpenColor}>
@@ -223,7 +223,7 @@ export default function Preferences() {
               </div>
               <div className="flex flex-col gap-3 items-center">
                 <h1 className="text-2xl">Endereço de entrega</h1>
-                <form onSubmit={handleSubmit} className="border p-4 rounded-xl text-left flex flex-col gap-4 w-fit">
+                <form onSubmit={handleSubmit} className="border md:p-3 p-2 rounded-xl text-left flex flex-col gap-4 w-fit">
                   <div className="flex items-center gap-2 flex-wrap">
                     <label htmlFor="endereco">Endereço:</label>
                     <input
@@ -231,7 +231,7 @@ export default function Preferences() {
                       id="endereco"
                       value={endereco}
                       onChange={(e) => setEndereco(e.target.value)}
-                      className="border rounded p-1"
+                      className="rounded p-1 bg-zinc-100 border focus:outline-pink-400"
                     />
                   </div>
                   <div className="flex items-center gap-2 flex-wrap">
@@ -241,7 +241,7 @@ export default function Preferences() {
                       id="complemento"
                       value={complemento}
                       onChange={(e) => setComplemento(e.target.value)}
-                      className="border rounded p-1"
+                      className="rounded p-1 bg-zinc-100 border focus:outline-pink-400"
                     />
                   </div>
                   <div className="text-center mt-2">
