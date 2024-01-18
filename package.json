@@ -41,6 +41,7 @@
     "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/ssr": "^0.0.10",
     "@supabase/supabase-js": "^2.39.1",
+    "axios": "^1.6.5",
     "class-variance-authority": "^0.7.0",
     "clipboard": "^2.0.11",
     "clsx": "^2.0.0",

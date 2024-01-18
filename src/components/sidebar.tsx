@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation'; // Importação correta do usePat
 import { useSidebarContext } from "@/contexts/sidebar-context";
 import { cn } from "@/lib/utils";
 import { Separator } from "./ui/separator";
-import { Activity, RefreshCcw, Settings, UserCheck, UserMinus } from "lucide-react";
+import { Activity, RefreshCcw, Settings, Truck, UserCheck, UserMinus } from "lucide-react";
 import { ThemeSwitcher } from "./theme-switcher";
 import { SidebarExpandToggle } from "./sidebar-expand-toggle";
 import logo from "..//..//public/images/logo-b.png";
@@ -66,6 +66,19 @@ export function Sidebar({}: SidebarProps) {
             </span>
             <span className="text-xs text-muted-foreground">
               Preferências de recebimento
+            </span>
+          </div>
+          </div>
+        </Link>
+        <Link href='/dashboard/rastreio'>
+        <div className={`${getLinkClassName('/dashboard/rastreio')} flex items-center gap-4 px-3 overflow-clip py-2 rounded sidebar-item`}>
+          <Truck className="shrink-0 w-5 aspect-square text-primary" />
+          <div className="flex flex-col whitespace-nowrap">
+            <span className="text-zinc-800 font-semibold text-sm">
+              Rastreio
+            </span>
+            <span className="text-xs text-muted-foreground">
+              Rastreie seu produto
             </span>
           </div>
           </div>
