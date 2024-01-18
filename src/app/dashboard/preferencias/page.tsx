@@ -45,6 +45,20 @@ export default function Preferences() {
   const [openSize, setOpenSize] = React.useState(false)
   const [valueSize, setSizeValue] = React.useState("")
 
+  const handleSavePreferences = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    try {
+      const { data, error } = await supabase
+        .from('preferences')
+        .upsert([{ id: user?.id, cor: valueColor, tamanho: valueSize }]);
+      
+      if (error) throw error;
+      console.log('Preferences saved:', data);
+    } catch (error) {
+      console.error('Error saving preferences:', error);
+    }
+  };
+
   return (
     <>
       <div className="flex">
@@ -56,8 +70,10 @@ export default function Preferences() {
               <p>Aqui você pode escolher as preferências do seu próximo pedido.</p>
               <p>Certifique-se de escolher a opção que mais te agrada 😁.</p>
             </div>
+            <div className="inline-flex flex-col justify-center">
             <div className="inline-flex mt-4 p-3 rounded-xl flex-col items-center border gap-2">
-              <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex flex-col items-center gap-6 flex-wrap">
+                <div className="flex gap-2 items-center">
                 <span>Cor:</span>
                 <Popover open={openColor} onOpenChange={setOpenColor}>
                   <PopoverTrigger asChild>
@@ -74,7 +90,7 @@ export default function Preferences() {
                   </PopoverTrigger>
                   <PopoverContent className="w-[200px] p-0">
                     <Command>
-                      <CommandInput placeholder="Search framework..." className="h-9" />
+                      {/* <CommandInput placeholder="Search framework..." className="h-9" /> */}
                       <CommandEmpty>Não encontrado.</CommandEmpty>
                       <CommandGroup>
                         {colors.map((framework) => (
@@ -93,6 +109,9 @@ export default function Preferences() {
                     </Command>
                   </PopoverContent>
                 </Popover>
+                </div>
+                <div className="flex gap-2 items-center">
+                <span>Tamanho:</span>
                 <Popover open={openSize} onOpenChange={setOpenSize}>
                   <PopoverTrigger asChild>
                     <Button
@@ -108,7 +127,7 @@ export default function Preferences() {
                   </PopoverTrigger>
                   <PopoverContent className="w-[200px] p-0">
                     <Command>
-                      <CommandInput placeholder="Search framework..." className="h-9" />
+                      {/* <CommandInput placeholder="Search framework..." className="h-9" /> */}
                       <CommandEmpty>Não encontrado.</CommandEmpty>
                       <CommandGroup>
                         {tamanhos.map((framework) => (
@@ -128,7 +147,10 @@ export default function Preferences() {
                   </PopoverContent>
                 </Popover>
               </div>
+              </div>
             </div>
+            <p className="mt-2 font-medium">As informações são salvas <span className="text-rose-400">automaticamente</span></p>
+          </div>
           </div>
         </div>
       </div>
