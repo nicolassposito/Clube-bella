@@ -158,6 +158,42 @@ export default function Dashboard() {
     checkSubscription();
   }, []);
 
+    const [megaStatus, setMegaStatus] = useState('');
+    const [laceStatus, setLaceStatus] = useState('');
+  
+    useEffect(() => {
+      async function checkSubscriptionStatus() {
+        const { data: { user } } = await supabase.auth.getUser();
+  
+        if (!user) {
+          console.error('Usuário não autenticado');
+          return;
+        }
+  
+        const checkStatus = async (table: string, setStatus: React.Dispatch<React.SetStateAction<string>>) => {
+          const { data, error } = await supabase
+            .from(table)
+            .select('status')
+            .eq('id', user.id);
+  
+          if (error) {
+            console.error(`Erro ao buscar dados da tabela ${table}:`, error);
+            return;
+          }
+  
+          if (data.length > 0 && data[0].status === 'active') {
+            setStatus('ativo');
+          }
+        };
+  
+        await checkStatus('subscription_mega_mes', setMegaStatus);
+        await checkStatus('subscription_lace_mes', setLaceStatus);
+      }
+  
+      checkSubscriptionStatus();
+    }, []);
+  
+
   const MENSAL_PRICE_ID_MEGA = "price_1OYY06FkEPvpDr1CP27NtZi3";
   const MENSAL_PRICE_ID_LACE = "price_1OYXz1FkEPvpDr1Cd01yWGQT";
 
@@ -165,8 +201,6 @@ export default function Dashboard() {
   const isDisabledLace = lacewig;
   const buttonClassNamesMega = isDisabledMega ? "bg-rose-300 before:content-['Assinado'] w-full py-2 rounded text-white font-light" : "bg-rose-400 hover:bg-pink-500 before:content-['Assinar'] hover:-translate-y-px transition w-full py-2 rounded text-white font-light";
   const buttonClassNamesLace = isDisabledLace ? "bg-rose-300 before:content-['Assinado'] w-full py-2 rounded text-white font-light" : "bg-rose-400 hover:bg-pink-500 before:content-['Assinar'] hover:-translate-y-px transition w-full py-2 rounded text-white font-light";
-  
-  
   return (
     <>
       <div className="flex">
@@ -185,8 +219,8 @@ export default function Dashboard() {
                         <AlertDialogTitle>Planos ativos</AlertDialogTitle>
                         <AlertDialogDescription>
                           <div className="border p-2 rounded">
-                            <p className="text-xl text-pink-400 font-semibold">Mega Hair adesivo</p>
-                            <span className=" p-1">plano mensal</span>
+                          {megaStatus && <h1>Plano Mega Hair {megaStatus}</h1>}
+                          {laceStatus && <h1>Plano Lace Wig {laceStatus}</h1>}
                           </div>
                         </AlertDialogDescription>
                       </AlertDialogHeader>
