@@ -48,7 +48,7 @@ export default function Preferences() {
                 <h1>Você também pode entrar em contato conosco pelo:</h1>
                 <ul className="mt-2 flex flex-col gap-1.5">
                     <li><Link className="inline-flex gap-1 justify-center items-center bg-rose-400 text-white py-2 px-4 rounded-xl" href="https://www.instagram.com/bellahaircabelos" passHref={true}><Instagram size={26} /> Instagram</Link></li>
-                    <li><Link className="inline-flex gap-1 justify-center items-center bg-green-500 text-white py-2 px-4 rounded-xl" href="https://www.instagram.com/bellahaircabelos" passHref={true}><FaWhatsapp size={26} /> WhatsApp</Link></li>
+                    <li><Link className="inline-flex gap-1 justify-center items-center bg-green-500 text-white py-2 px-4 rounded-xl" href="https://api.whatsapp.com/send/?phone=551155715311" passHref={true}><FaWhatsapp size={26} /> WhatsApp</Link></li>
                 </ul>
               </div>
             </div>
