@@ -8,20 +8,13 @@ import {
     AlertDescription,
     AlertTitle,
   } from "@/components/ui/alert"
-import { Truck } from "lucide-react";
+import { Truck, TruckIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import axios from 'axios';
-const { rastrearEncomendas } = require('correios-brasil');
 
 
 export default function Rastreio() {
   // useIsLogged();
-  let codRastreio = ['TJ073961830BR'];
-
-  rastrearEncomendas(codRastreio).then((response: any) => {
-    console.log(response);
-  });
-
   return (
     <>
       <div className="flex">
@@ -31,7 +24,6 @@ export default function Rastreio() {
             <div>
             <div className="text-center flex flex-col gap-2">
                 <div className="flex flex-col gap-1">
-                {/* TJ073961830BR */}
                 <h1 className="text-2xl">Rastreamento de produto</h1>
                 <div>
 
@@ -47,9 +39,14 @@ export default function Rastreio() {
                     </Alert>
                   </div>
                   <div className="p-3 border rounded-xl">
-                    <h1>TJ073961830BR</h1>
-                    {/* 1QTOdGIUrgLpyFs07iszMSYTVRGeY8IpmEdNEn8J */}
-                    <Separator className="my-2 bg-pink-500"/>
+                    <div className="text-center">
+                      <p className="flex items-center gap-1 text-base"><TruckIcon className="text-rose-400"/>Seu pedido foi postado!</p>
+                        <p className="py-2 text-sm text-xinc-600">Código de rastreio:</p>
+                          <button className="bg-zinc-100 py-1.5 px-3 rounded">TJ073961830BR</button>
+                    </div>
+                    <div className="mt-5 text-sm text-zinc-500">
+                      Pedido postado dia <span className="text-rose-500">19/01/2024</span>
+                    </div>
                   </div>
                 </form>
               </div>
