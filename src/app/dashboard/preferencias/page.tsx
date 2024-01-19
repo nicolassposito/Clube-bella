@@ -8,6 +8,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import './style.css';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Info } from "lucide-react";
 
 export default function Preferences() {
   useIsLogged();
@@ -231,7 +233,7 @@ export default function Preferences() {
                       id="endereco"
                       value={endereco}
                       onChange={(e) => setEndereco(e.target.value)}
-                      className="rounded p-1 bg-zinc-100 border focus:outline-pink-400"
+                      className="rounded p-1 bg-zinc-50 border focus:outline-pink-400"
                     />
                   </div>
                   <div className="flex items-center gap-2 flex-wrap">
@@ -241,7 +243,7 @@ export default function Preferences() {
                       id="complemento"
                       value={complemento}
                       onChange={(e) => setComplemento(e.target.value)}
-                      className="rounded p-1 bg-zinc-100 border focus:outline-pink-400"
+                      className="rounded p-1 bg-zinc-50 border focus:outline-pink-400"
                     />
                   </div>
                   <div className="text-center mt-2">
@@ -250,7 +252,13 @@ export default function Preferences() {
                 </form>
               </div>
               <p className="mt-2 font-medium">
-                As informações são salvas <span className="text-rose-400">automaticamente</span>
+              <Alert className="max-w-sm">
+                <Info className="h-4 w-4" />
+                <AlertTitle className="!pl-2">Não se preocupe!</AlertTitle>
+                <AlertDescription className="!pl-2">
+                  As informações são salvas e carregadas <span className="text-rose-400">automaticamente</span>
+                </AlertDescription>
+              </Alert>
               </p>
             </div>
           </div>

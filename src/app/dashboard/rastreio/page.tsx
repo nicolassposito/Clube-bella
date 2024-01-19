@@ -11,11 +11,16 @@ import {
 import { Truck } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import axios from 'axios';
+const { rastrearEncomendas } = require('correios-brasil');
 
 
 export default function Rastreio() {
-  useIsLogged();
-  
+  // useIsLogged();
+  let codRastreio = ['TJ073961830BR'];
+
+  rastrearEncomendas(codRastreio).then((response: any) => {
+    console.log(response);
+  });
 
   return (
     <>
@@ -28,6 +33,9 @@ export default function Rastreio() {
                 <div className="flex flex-col gap-1">
                 {/* TJ073961830BR */}
                 <h1 className="text-2xl">Rastreamento de produto</h1>
+                <div>
+
+              </div>
                 </div>
                 <form className="text-left flex flex-col gap-4 w-full">
                   <div className="flex flex-col gap-2 hidden">

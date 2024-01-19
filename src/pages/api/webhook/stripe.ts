@@ -39,7 +39,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   switch (event.type) {
     case 'payment_intent.succeeded':
-      console.log("HAHAHAHAHAHAHA");
         console.log("Evento de pagamento bem-sucedido recebido", event);
         const { data, error } = await supabase
         .from("subscription")
