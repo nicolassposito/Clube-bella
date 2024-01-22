@@ -297,11 +297,11 @@ async function fetchData(filterEmail: string): Promise<Profile[]> {
           <TableBody>
             {table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                {row.getVisibleCells().map((Cell) => (
+                  <TableCell key={Cell.id}>
                     {flexRender(
-                      cell.column.columnDef.cell,
-                      cell.getContext()
+                      Cell.column.columnDef.cell,
+                      Cell.getContext()
                     )}
                   </TableCell>
                 ))}
