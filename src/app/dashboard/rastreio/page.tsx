@@ -46,6 +46,7 @@ export default function Rastreio() {
     loadPreferences();
   }, [supabase]);
 
+  // onClick={() => navigator.clipboard.writeText(payment.id)
   return (
     <>
       <div className="flex">
