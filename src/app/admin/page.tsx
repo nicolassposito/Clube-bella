@@ -111,21 +111,36 @@ export type Profile = {
         id: 'actions',
         cell: ({ row }) => {
             const [codigoRastreio, setCodigoRastreio] = React.useState('');
-            const [preferences, setPreferences] = React.useState({ endereco: '', complemento: '' });
+            const [preferences, setPreferences] = React.useState({ endereco: '', complemento: '', cor: '', tamanho: '' });
             const [isLoading, setIsLoading] = React.useState(false);
+      
+          const adicionarEnvio = async () => {
+            const { data, error } = await supabase
+              .from('envios')
+              .insert([
+                { id: row.original.id, codigo_rastreio: codigoRastreio, data_postagem: new Date() }
+              ]);
+      
+            if (error) {
+              console.error('Erro ao adicionar envio:', error);
+            } else {
+              console.log('Envio adicionado com sucesso:', data);
+              setCodigoRastreio('');
+            }
+          };
         
             const fetchPreferences = async () => {
               setIsLoading(true);
               const { data, error } = await supabase
                 .from('preferences')
-                .select('endereco, complemento')
+                .select('cor, tamanho , endereco, complemento')
                 .eq('id', row.original.id)
                 .single();
         
               if (error) {
-                setPreferences({ endereco: 'N/A', complemento: 'N/A' });
+                setPreferences({ endereco: 'N/A', complemento: 'N/A', tamanho: 'N/A', cor: 'N/A' });
               } else {
-                setPreferences(data || { endereco: 'N/A', complemento: 'N/A' });
+                setPreferences(data || { endereco: 'N/A', complemento: 'N/A', tamanho: 'N/A', cor: 'N/A' });
               }
               setIsLoading(false);
             };
@@ -148,15 +163,20 @@ export type Profile = {
                       ) : (
                         <>
                           <div className="py-2">
-                            <h1>Endereço: {preferences.endereco}</h1>
+                            <p className="text-base">Endereço: {preferences.endereco}</p>
                             <p>Complemento: {preferences.complemento}</p>
+                          </div>
+                          <div className="py-2">
+                            <h1 className="text-base">Preferências de Recebimento:</h1>
+                            <p>Cor: {preferences.cor}</p>
+                            <p>Tamanho: {preferences.tamanho}</p>
                           </div>
                           <Input
                             placeholder="Código de envio"
                             value={codigoRastreio}
                             onChange={(e) => setCodigoRastreio(e.target.value)}
                           />
-                          <Button onClick={() => { /* função para adicionar envio */ }} className="mt-4 bg-rose-400 text-white hover:bg-rose-500">
+                          <Button onClick={adicionarEnvio} className="mt-4 bg-rose-400 text-white hover:bg-rose-500">
                             Adicionar Envio
                           </Button>
                         </>
