@@ -55,7 +55,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const stripeId = data[0].stripe_id;
         const sessionToken = data[0].session;
         const subscriptionType = data[0].subscription_type;
-        console.log("BABABABABA", subscriptionType)
         const supabaseAlt = createClient(
           process.env.NEXT_PUBLIC_SUPABASE_URL!,
           process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -83,6 +82,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               } else {
                 console.log("SupabaseAlt sucesso", dataAlt)
               }
+
+              const { data: saveSubs, error: errorSaveSubs } = await supabaseAlt
+                .from("assinaturas")
+                .upsert({ id: userId, assinatura: 'MegaHairMes' })
+        
+              if (errorSaveSubs) {
+                console.log("Erro ao salvar plano do usuario", saveSubs)
+              } else {
+                console.log("Sucesso ao salvar plano do usuario", saveSubs)
+              }
             }
             break;
             case "price_1OYXz1FkEPvpDr1Cd01yWGQT":
@@ -98,6 +107,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 } else {
                   console.log("SupabaseAlt sucesso", dataAlt)
                 }
+
+                const { data: saveSubs, error: errorSaveSubs } = await supabaseAlt
+                .from("assinaturas")
+                .upsert({ id: userId, assinatura: 'LaceWigMes' })
+        
+              if (errorSaveSubs) {
+                console.log("Erro ao salvar plano do usuario", saveSubs)
+              } else {
+                console.log("Sucesso ao salvar plano do usuario", saveSubs)
+              }
               }
               break;
           default:
