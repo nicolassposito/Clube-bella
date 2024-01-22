@@ -16,16 +16,16 @@ import {
   getCoreRowModel,
 } from "@tanstack/react-table";
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-  } from "@/components/ui/alert-dialog"
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -47,74 +47,73 @@ import {
 const supabase = createClientComponentClient();
 
 export type Profile = {
-    id: string;
-    fullname: string;
-    email: string;
-    ultimoEnvio: string | null;
-    subscriptions: string; // Adicionado
-  };
-  
-  async function fetchData(filterEmail: string) {
-    let query = supabase.from('profiles').select('id, fullname, email, subscriptions');
-  
-    if (filterEmail) {
-      query = query.ilike('email', `%${filterEmail}%`);
-    }
-  
-    const { data: profilesData, error: profilesError } = await query;
-  
-    if (profilesError || !profilesData) {
-      console.error('Erro ao buscar perfis:', profilesError);
-      return [];
-    }
-  
-    console.log('Perfis encontrados:', profilesData);
-  
-    const validProfilesPromises = profilesData.map(async (profile) => {
-      console.log('Verificando subscrição para:', profile);
-  
-      let tabelaSubscricao = profile.subscriptions === 'MegaHairMes' 
-        ? 'subscription_mega_mes' 
-        : profile.subscriptions === 'LaceWigMes' 
-          ? 'subscription_lace_mes' 
-          : null;
-  
-      if (!tabelaSubscricao) {
-        console.log('Tipo de subscrição desconhecido:', profile.subscriptions);
-        return null;
-      }
-  
-      const { data: subscriptionData, error: subscriptionError } = await supabase
-        .from(tabelaSubscricao)
-        .select('subscription_date')
-        .eq('id', profile.id)
-        .single();
-  
-      if (subscriptionError || !subscriptionData) {
-        console.error('Erro ao buscar data de subscrição:', subscriptionError);
-        return null;
-      }
-  
-      if (new Date(subscriptionData.subscription_date) < new Date()) {
-        console.log('Subscrição expirada para o perfil:', profile);
-        return null;
-      }
-  
-      return profile;
-    });
-  
-    const validProfilesResults = await Promise.all(validProfilesPromises);
-  
-    const filteredProfiles = validProfilesResults.filter((profile): profile is Profile => profile !== null);
-    console.log('Perfis filtrados:', filteredProfiles);
-  
-    return filteredProfiles;
+  id: string;
+  fullname: string;
+  email: string;
+  ultimoEnvio: string | null;
+  subscriptions: string;
+};
+
+async function fetchData(filterEmail: string): Promise<Profile[]> {
+  let query = supabase.from('profiles').select('id, fullname, email, subscriptions');
+
+  if (filterEmail) {
+    query = query.ilike('email', `%${filterEmail}%`);
   }
+
+  const { data: profilesData, error: profilesError } = await query;
+
+  if (profilesError || !profilesData) {
+    console.error('Erro ao buscar perfis:', profilesError);
+    return [];
+  }
+
+  const validProfilesPromises = profilesData.map(async (profile) => {
+    let tabelaSubscricao = '';
+
+    switch (profile.subscriptions) {
+      case 'MegaHairMes':
+        tabelaSubscricao = 'subscription_mega_mes';
+        break;
+      case 'LaceWigMes':
+        tabelaSubscricao = 'subscription_lace_mes';
+        break;
+      default:
+        return null;
+    }
+
+    const { data: subscriptionData, error: subscriptionError } = await supabase
+      .from(tabelaSubscricao)
+      .select('subscription_date')
+      .eq('id', profile.id)
+      .single();
+
+    if (subscriptionError || !subscriptionData || new Date(subscriptionData.subscription_date) < new Date()) {
+      return null;
+    }
+
+    const { data: lastEnvioData, error: lastEnvioError } = await supabase
+      .from('envios')
+      .select('data_postagem')
+      .eq('id', profile.id)
+      .order('data_postagem', { ascending: false })
+      .limit(1)
+      .single();
+
+    const ultimoEnvio = lastEnvioError || !lastEnvioData ? 'N/A' : lastEnvioData.data_postagem;
+
+    return { ...profile, ultimoEnvio };
+  });
+
+  const validProfilesResults = await Promise.all(validProfilesPromises);
+
+  return validProfilesResults.filter((profile): profile is Profile => profile !== null);
+}
   
   export const columns: ColumnDef<Profile>[] = [
     {
       accessorKey: "fullname",
-      header: "Full Name",
+      header: "Nome",
       cell: ({ row }) => <div>{row.getValue("fullname")}</div>,
     },
     {
