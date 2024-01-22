@@ -84,7 +84,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               }
 
               const { data: saveSubs, error: errorSaveSubs } = await supabaseAlt
-                .from("assinaturas")
+                .from("profiles")
                 .upsert({ id: userId, assinatura: 'MegaHairMes' })
         
               if (errorSaveSubs) {
@@ -109,7 +109,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
 
                 const { data: saveSubs, error: errorSaveSubs } = await supabaseAlt
-                .from("assinaturas")
+                .from("profiles")
                 .upsert({ id: userId, assinatura: 'LaceWigMes' })
         
               if (errorSaveSubs) {
