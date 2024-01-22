@@ -2,6 +2,8 @@
 
 import * as React from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import Image from "next/image";
+import logo from "..//..//..//public/images/logo-b.png";
 import {
   CaretSortIcon,
   ChevronDownIcon,
@@ -239,7 +241,11 @@ async function fetchData(filterEmail: string): Promise<Profile[]> {
   
 
   return (
-    <div className="w-full">
+    <div className="w-full container mx-auto">
+      <div className="flex items-center justify-center">
+        <Image width={120} src={logo} alt="logo"/>
+        <h1 className="text-5xl">Envios</h1>
+      </div>
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter emails..."
