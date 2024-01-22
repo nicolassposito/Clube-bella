@@ -51,11 +51,12 @@ export type Profile = {
     fullname: string;
     email: string;
     ultimoEnvio: string | null;
+    subscriptions: string; // Adicionado
   };
   
   async function fetchData(filterEmail: string) {
-    let query = supabase.from('profiles').select('id, fullname, email');
-    
+    let query = supabase.from('profiles').select('id, fullname, email, subscriptions');
+  
     if (filterEmail) {
       query = query.ilike('email', `%${filterEmail}%`);
     }
@@ -63,32 +64,51 @@ export type Profile = {
     const { data: profilesData, error: profilesError } = await query;
   
     if (profilesError || !profilesData) {
-    //   console.error(profilesError);
+      console.error('Erro ao buscar perfis:', profilesError);
       return [];
     }
   
-    const lastEnviosPromises = profilesData.map(async (profile) => {
-      const { data: lastEnvioData, error: lastEnvioError } = await supabase
-        .from('envios')
-        .select('data_postagem')
-        .eq('id', profile.id)
-        .order('data_postagem', { ascending: false })
-        .limit(1)
-        .single();
+    console.log('Perfis encontrados:', profilesData);
   
-      if (lastEnvioError) {
-        // console.error(lastEnvioError);
-        return 'N/A';
+    const validProfilesPromises = profilesData.map(async (profile) => {
+      console.log('Verificando subscrição para:', profile);
+  
+      let tabelaSubscricao = profile.subscriptions === 'MegaHairMes' 
+        ? 'subscription_mega_mes' 
+        : profile.subscriptions === 'LaceWigMes' 
+          ? 'subscription_lace_mes' 
+          : null;
+  
+      if (!tabelaSubscricao) {
+        console.log('Tipo de subscrição desconhecido:', profile.subscriptions);
+        return null;
       }
   
-      return lastEnvioData?.data_postagem || 'N/A';
+      const { data: subscriptionData, error: subscriptionError } = await supabase
+        .from(tabelaSubscricao)
+        .select('subscription_date')
+        .eq('id', profile.id)
+        .single();
+  
+      if (subscriptionError || !subscriptionData) {
+        console.error('Erro ao buscar data de subscrição:', subscriptionError);
+        return null;
+      }
+  
+      if (new Date(subscriptionData.subscription_date) < new Date()) {
+        console.log('Subscrição expirada para o perfil:', profile);
+        return null;
+      }
+  
+      return profile;
     });
   
-    const lastEnviosResults = await Promise.all(lastEnviosPromises);
+    const validProfilesResults = await Promise.all(validProfilesPromises);
   
-    return profilesData.map((profile, index) => {
-      return { ...profile, ultimoEnvio: lastEnviosResults[index] };
-    });
+    const filteredProfiles = validProfilesResults.filter((profile): profile is Profile => profile !== null);
+    console.log('Perfis filtrados:', filteredProfiles);
+  
+    return filteredProfiles;
   }
   
   export const columns: ColumnDef<Profile>[] = [
