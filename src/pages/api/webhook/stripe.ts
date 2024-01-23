@@ -71,6 +71,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         switch (subscriptionType) {
           case "price_1OYY06FkEPvpDr1CP27NtZi3":
             {
+              try {
+                
               console.log("Assinatura Mega Hair");
               const { data: dataAlt, error: errorAlt } = await supabaseAlt
                 .from("subscription_mega_mes")
@@ -85,38 +87,48 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
               const { data: saveSubs, error: errorSaveSubs } = await supabaseAlt
                 .from("profiles")
-                .upsert({ id: userId, assinatura: 'MegaHairMes' })
+                .upsert({ id: userId, subscriptions: 'MegaHairMes' })
+                .eq('id', userId);
         
               if (errorSaveSubs) {
                 console.log("Erro ao salvar plano do usuario", saveSubs)
               } else {
                 console.log("Sucesso ao salvar plano do usuario", saveSubs)
+              }
+              } catch (error) {
+                console.error("Erro ao conectar com o Supabase:", error);
               }
             }
             break;
             case "price_1OYXz1FkEPvpDr1Cd01yWGQT":
               {
-                console.log("Assinatura Lace Wig");
-                const { data: dataAlt, error: errorAlt } = await supabaseAlt
-                  .from("subscription_lace_mes")
-                  .upsert({ id: userId, subscription_date: dataFutura.toISOString().split('T')[0], stripe_id: stripeId })
-                  .eq('id', userId);
-          
-                if (errorAlt) {
-                  console.log("SupabaseAlt erro", errorAlt)
-                } else {
-                  console.log("SupabaseAlt sucesso", dataAlt)
-                }
-
-                const { data: saveSubs, error: errorSaveSubs } = await supabaseAlt
-                .from("profiles")
-                .upsert({ id: userId, assinatura: 'LaceWigMes' })
-        
-              if (errorSaveSubs) {
-                console.log("Erro ao salvar plano do usuario", saveSubs)
-              } else {
-                console.log("Sucesso ao salvar plano do usuario", saveSubs)
-              }
+                try {
+                
+                  console.log("Assinatura Lace");
+                  const { data: dataAlt, error: errorAlt } = await supabaseAlt
+                    .from("subscription_lace_mes")
+                    .upsert({ id: userId, subscription_date: dataFutura.toISOString().split('T')[0], stripe_id: stripeId })
+                    .eq('id', userId);
+            
+                  if (errorAlt) {
+                    console.log("SupabaseAlt erro", errorAlt)
+                  } else {
+                    console.log("SupabaseAlt sucesso", dataAlt)
+                  }
+    
+                  const { data: saveSubs, error: errorSaveSubs } = await supabaseAlt
+                    .from("profiles")
+                    .upsert({ id: userId, subscriptions: 'LaceWigMes' })
+                    .eq('id', userId);
+            
+                  if (errorSaveSubs) {
+                    console.log("Erro ao salvar plano do usuario", saveSubs)
+                  } else {
+                    console.log("Sucesso ao salvar plano do usuario", saveSubs)
+                  }
+                  } catch (error) {
+                    console.error("Erro ao conectar com o Supabase:", error);
+                  }
               }
               break;
           default:
