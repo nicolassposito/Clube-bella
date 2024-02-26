@@ -39,31 +39,32 @@ export default async function handler(
 
     const { name, email, userId, userEmail, paymentMethod, priceId } = req.body;
 
-    const customer = await stripe.customers.create({
-      email,
-      name,
-      payment_method: paymentMethod,
-      invoice_settings: { default_payment_method: paymentMethod },
+    const existingCustomers = await stripe.customers.list({
+      email: email,
+      limit: 1,
     });
 
-    // const product = await stripe.products.create({
-    //   name: "Monthly subscription",
-    // });
+    let customerId;
+    let customerEmail;
 
+    if (existingCustomers.data.length > 0) {
+      // Cliente existente encontrado, reutilize o ID do cliente existente
+      customerId = existingCustomers.data[0].id;
+    } else {
+      // Nenhum cliente existente encontrado, crie um novo
+      const customer = await stripe.customers.create({
+        email,
+        name,
+        payment_method: paymentMethod,
+        invoice_settings: { default_payment_method: paymentMethod },
+      });
+      customerId = customer.id;
+      customerEmail = customer.email;
+    }
+
+    // Criar assinatura usando o customerId (existente ou novo)
     const subscription = await stripe.subscriptions.create({
-      customer: customer.id,
-      // items: [
-      //   // {
-      //   //   price_data: {
-      //   //     currency: "BRL",
-      //   //     product: product.id,
-      //   //     unit_amount: 200,
-      //   //     recurring: {
-      //   //       interval: "month",
-      //   //     },
-      //   //   },
-      //   // },
-      // ],
+      customer: customerId,
       items: [{ price: priceId }],
       payment_settings: {
         payment_method_types: ["card"],
@@ -86,7 +87,7 @@ export default async function handler(
     try {
       const { data, error } = await supabase
         .from("subscription")
-        .upsert({ id: userId, stripe_id: customer.id, session: token, subscription_type: priceId, stripe_email: customer.email, supabase_email: userEmail })
+        .upsert({ id: userId, stripe_id: customerId, session: token, subscription_type: priceId, stripe_email: customerEmail, supabase_email: userEmail })
 
       if (error) {
         throw error;

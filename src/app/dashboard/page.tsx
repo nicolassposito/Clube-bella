@@ -47,7 +47,7 @@ const stripePromise = loadStripe(
 
 
 export default function Dashboard() {
-  useIsLogged();
+  // useIsLogged();
   const [fullName, setFullName] = useState("");
   const [selectedPriceId, setSelectedPriceId] = useState("");
   const [subsnum, setSubsnum] = useState(0);
@@ -89,110 +89,39 @@ export default function Dashboard() {
 
     fetchFullName();
 
-    const checkSubscription = async () => {
-      try {
+    async function verifySubscription() {
+      var stripeUser;
+      try{
         const { data: { user } } = await supabase.auth.getUser()
-        let { data: laceData, error: laceError } = await supabase
-          .from('subscription_lace_mes')
-          .select('subscription_date')
-          .eq('id', user?.id)
+        const { data, error } = await supabase
+          .from("subscription")
+          .select("stripe_id")
+          .eq("id", user?.id);
 
-        if (laceError) throw laceError;
+          stripeUser = data;
+      } catch(error){
 
-        if (laceData && laceData.length > 0) {
-          const subscriptionDate = new Date(laceData[0].subscription_date);
-          if (serverTime < subscriptionDate) {
-            setSubsnum(prev => prev + 1);
-            setLaceWig(true);
-            console.log(lacewig);
-            let { data: laceData, error: laceError } = await supabase
-                .from('subscription_lace_mes')
-                .upsert({ id: user?.id, status: 'active' })
-
-                if(laceError){
-                  console.log(laceError);
-                } else{
-                  console.log(laceData);
-                }
-          } else{
-            let { data: laceData, error: laceError } = await supabase
-                .from('subscription_lace_mes')
-                .upsert({ id: user?.id, status: 'inactive' })
-          }
-        }
-
-        let { data: megaData, error: megaError } = await supabase
-          .from('subscription_mega_mes')
-          .select('subscription_date')
-          .eq('id', user?.id)
-
-        if (megaError) throw megaError;
-
-        if (megaData && megaData.length > 0) {
-          const subscriptionDate = new Date(megaData[0].subscription_date);
-          if (serverTime < subscriptionDate) {
-            setSubsnum(prev => prev + 1);
-            setMegahair(true);
-          console.log(megahair);
-          let { data: megaData, error: megaError } = await supabase
-                .from('subscription_mega_mes')
-                .upsert({ id: user?.id, status: 'active' })
-
-                if(laceError){
-                  console.log(megaError);
-                } else{
-                  console.log(megaData);
-                }
-          } else{
-            let { data: megaData, error: megaError } = await supabase
-                .from('subscription_mega_mes')
-                .upsert({ id: user?.id, status: 'inactive' })
-          }
-        }
-      } catch (error) {
-        console.error('Erro na consulta: ', error);
       }
-    };
+      const response = await fetch('/api/checksubscription', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ stripeUser }),
+      });
+    
+      const data = await response.json();
+      // console.log(data.subscriptions.data[0].plan.active);
+      // console.log(data.subscriptions.data[0].plan.id);
+      console.log(data)
+    }
 
-
-    checkSubscription();
+    verifySubscription();
+    
   }, []);
 
     const [megaStatus, setMegaStatus] = useState('');
     const [laceStatus, setLaceStatus] = useState('');
-  
-    useEffect(() => {
-      async function checkSubscriptionStatus() {
-        const { data: { user } } = await supabase.auth.getUser();
-  
-        if (!user) {
-          console.error('Usuário não autenticado');
-          return;
-        }
-  
-        const checkStatus = async (table: string, setStatus: React.Dispatch<React.SetStateAction<string>>) => {
-          const { data, error } = await supabase
-            .from(table)
-            .select('status')
-            .eq('id', user.id);
-  
-          if (error) {
-            console.error(`Erro ao buscar dados da tabela ${table}:`, error);
-            return;
-          }
-  
-          if (data.length > 0 && data[0].status === 'active') {
-            setStatus('ativo');
-          }
-        };
-  
-        await checkStatus('subscription_mega_mes', setMegaStatus);
-        await checkStatus('subscription_lace_mes', setLaceStatus);
-      }
-  
-      checkSubscriptionStatus();
-    }, []);
-  
 
   const MENSAL_PRICE_ID_MEGA = "price_1OYY06FkEPvpDr1CP27NtZi3";
   const MENSAL_PRICE_ID_LACE = "price_1OYXz1FkEPvpDr1Cd01yWGQT";
