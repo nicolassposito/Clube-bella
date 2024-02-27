@@ -45,30 +45,27 @@ const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
 );
 
+interface Price {
+  id: string;
+}
+
+interface SubscriptionItem {
+  price: Price;
+}
+
+interface Subscription {
+}
+
 
 export default function Dashboard() {
   // useIsLogged();
   const [fullName, setFullName] = useState("");
   const [selectedPriceId, setSelectedPriceId] = useState("");
   const [subsnum, setSubsnum] = useState(0);
-  const [serverTime, setServerTime] = useState(new Date());
   const [megahair, setMegahair] = useState(false);
-  const [lacewig, setLaceWig] = useState(false);
+  const [lacewig, setLacewig] = useState(false);
+  
   const supabase = createClientComponentClient()
-
-  useEffect(() => {
-    const fetchServerTime = async () => {
-      try {
-        const response = await fetch('/api/date');
-        const data = await response.json();
-        setServerTime(new Date(data.time));
-      } catch (error) {
-        console.error('Erro ao buscar a hora do servidor: ', error);
-      }
-    };
-
-    fetchServerTime();
-  }, []);
 
   useEffect(() => {
     const fetchFullName = async () => {
@@ -110,26 +107,33 @@ export default function Dashboard() {
         body: JSON.stringify({ stripeUser }),
       });
     
-      const data = await response.json();
-      // console.log(data.subscriptions.data[0].plan.active);
-      // console.log(data.subscriptions.data[0].plan.id);
-      console.log(data)
+      const subscriptionData = await response.json();
+
+      if (subscriptionData) {
+        for (const subscription of subscriptionData.subscriptions.data) {
+          if (subscription.plan.id === "price_1OYY06FkEPvpDr1CP27NtZi3") {
+            console.log("Assinatura Mega Hair encontrada", subscription.plan.id);
+            setMegahair(true);
+            setSubsnum(prev => prev + 1);
+          } else if (subscription.plan.id === "price_1OYXz1FkEPvpDr1Cd01yWGQT") {
+            console.log("Assinatura Lace Wig encontrada", subscription.plan.id);
+            setLacewig(true);
+            setSubsnum(prev => prev + 1);
+          }
+        }
+      }
+    
     }
 
     verifySubscription();
     
   }, []);
 
-    const [megaStatus, setMegaStatus] = useState('');
-    const [laceStatus, setLaceStatus] = useState('');
-
   const MENSAL_PRICE_ID_MEGA = "price_1OYY06FkEPvpDr1CP27NtZi3";
   const MENSAL_PRICE_ID_LACE = "price_1OYXz1FkEPvpDr1Cd01yWGQT";
 
-  const isDisabledMega = megahair;
-  const isDisabledLace = lacewig;
-  const buttonClassNamesMega = isDisabledMega ? "bg-rose-300 before:content-['Assinado'] w-full py-2 rounded text-white font-light" : "bg-rose-400 hover:bg-pink-500 before:content-['Assinar'] hover:-translate-y-px transition w-full py-2 rounded text-white font-light";
-  const buttonClassNamesLace = isDisabledLace ? "bg-rose-300 before:content-['Assinado'] w-full py-2 rounded text-white font-light" : "bg-rose-400 hover:bg-pink-500 before:content-['Assinar'] hover:-translate-y-px transition w-full py-2 rounded text-white font-light";
+  // const buttonClassNamesMega = isDisabledMega ? "bg-rose-300 before:content-['Assinado'] w-full py-2 rounded text-white font-light" : "bg-rose-400 hover:bg-pink-500 before:content-['Assinar'] hover:-translate-y-px transition w-full py-2 rounded text-white font-light";
+  // const buttonClassNamesLace = isDisabledLace ? "bg-rose-300 before:content-['Assinado'] w-full py-2 rounded text-white font-light" : "bg-rose-400 hover:bg-pink-500 before:content-['Assinar'] hover:-translate-y-px transition w-full py-2 rounded text-white font-light";
   return (
     <>
       <div className="flex">
@@ -148,8 +152,7 @@ export default function Dashboard() {
                         <AlertDialogTitle>Planos ativos</AlertDialogTitle>
                         <AlertDialogDescription>
                           <div className="border p-2 rounded">
-                          {megaStatus && <h1>Plano Mega Hair {megaStatus}</h1>}
-                          {laceStatus && <h1>Plano Lace Wig {laceStatus}</h1>}
+                          aaaa
                           </div>
                         </AlertDialogDescription>
                       </AlertDialogHeader>
@@ -195,7 +198,7 @@ export default function Dashboard() {
                     <Dialog>
                       <DialogTrigger
                         onClick={() => setSelectedPriceId(MENSAL_PRICE_ID_MEGA)}
-                        className={buttonClassNamesMega}
+                        className="bg-rose-400 hover:bg-pink-500 before:content-['Assinar'] hover:-translate-y-px transition w-full py-2 rounded text-white font-light disabled:opacity-30 disabled:hover:-translate-y-0 disabled:hover:bg-rose-400"
                         disabled={megahair}
                       >
                       </DialogTrigger>
@@ -259,7 +262,7 @@ export default function Dashboard() {
                     <Dialog>
                       <DialogTrigger
                         onClick={() => setSelectedPriceId(MENSAL_PRICE_ID_LACE)}
-                        className={buttonClassNamesLace}
+                        className="bg-rose-400 hover:bg-pink-500 before:content-['Assinar'] hover:-translate-y-px transition w-full py-2 rounded text-white font-light disabled:opacity-30 disabled:hover:-translate-y-0 disabled:hover:bg-rose-400"
                         disabled={lacewig}
                       >
                       </DialogTrigger>
