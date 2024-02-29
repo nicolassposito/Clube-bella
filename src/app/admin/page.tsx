@@ -103,9 +103,9 @@ type profilesData = {
     {
         id: 'actions',
         cell: ({ row }) => {
-            const [codigoRastreio, setCodigoRastreio] = React.useState('');
-            const [preferences, setPreferences] = React.useState({ endereco: '', complemento: '', cor: '', tamanho: '' });
-            const [isLoading, setIsLoading] = React.useState(false);
+          const [codigoRastreio, setCodigoRastreio] = React.useState('');
+          const [preferences, setPreferences] = React.useState({ endereco: '', complemento: '', cor: '', tamanho: '' });
+          const [isLoading, setIsLoading] = React.useState(false);
       
           const adicionarEnvio = async () => {
             const { data, error } = await supabase
@@ -137,6 +137,10 @@ type profilesData = {
               }
               setIsLoading(false);
             };
+
+            React.useEffect(() => {
+              fetchPreferences();
+            }, []);
         
             return (
               <div className="flex items-center justify-end">
