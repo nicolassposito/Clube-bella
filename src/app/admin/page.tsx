@@ -50,18 +50,32 @@ const supabase = createClientComponentClient();
 
 export type Profile = {
   id: string;
-  fullname: string;
+  name: string;
   email: string;
-  ultimoEnvio: string | null;
-  subscriptions: string;
-  isActiveSubscription?: boolean;
+  ultimoEnvio: string;
+  activeSubscriptions: string;
 };
+
+interface Perfil {
+  id: string;
+  name: string;
+  activeSubscriptions: string;
+}
+
+type profilesData = {
+  element: string;
+}
   
   export const columns: ColumnDef<Profile>[] = [
     {
-      accessorKey: "fullname",
+      accessorKey: "id",
+      header: "Id",
+      cell: ({ row }) => <div>{row.getValue("id")}</div>,
+    },
+    {
+      accessorKey: "name",
       header: "Nome",
-      cell: ({ row }) => <div>{row.getValue("fullname")}</div>,
+      cell: ({ row }) => <div>{row.getValue("name")}</div>,
     },
     {
       accessorKey: "email",
@@ -74,6 +88,19 @@ export type Profile = {
       cell: ({ row }) => <div>{row.getValue("ultimoEnvio")}</div>,
     },
     {
+      accessorKey: "plano",
+      header: "Plano",
+      cell: ({ row }) => (
+        <div>
+        {row.getValue("plano") === "price_1OYY06FkEPvpDr1CP27NtZi3"
+          ? "Mega Hair Mês"
+          : row.getValue("plano") === "price_1OYXz1FkEPvpDr1Cd01yWGQT"
+          ? "Lace Wig Mês"
+          : row.getValue("plano")}
+      </div>
+      ),
+    },
+    {
         id: 'actions',
         cell: ({ row }) => {
             const [codigoRastreio, setCodigoRastreio] = React.useState('');
@@ -83,7 +110,7 @@ export type Profile = {
           const adicionarEnvio = async () => {
             const { data, error } = await supabase
               .from('envios')
-              .insert([
+              .upsert([
                 { id: row.original.id, codigo_rastreio: codigoRastreio, data_postagem: new Date() }
               ]);
       
@@ -172,27 +199,23 @@ export type Profile = {
       const { data: { user } } = await supabase.auth.getUser()
       const session = await supabase.auth.getSession();
       const token = session.data.session?.access_token;
-      if (!user?.id) {
-          throw new Error("User not found");
-      }
-  
       try {
-        const response = await fetch(`/api/profiles?filterEmail=${filterEmail}`, {
+        const response = await fetch(`/api/profiles`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
           },
         });
-  
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
-  
-        const profiles = await response.json();
-        setData(profiles);
+        const perfis = await response.json();
+        console.log(perfis);
+        setData(perfis);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
+
     };
   
     React.useEffect(() => {
@@ -206,77 +229,53 @@ export type Profile = {
       state: { sorting, columnVisibility },
     });
   
-
-  return (
-    <div className="w-full container mx-auto">
-      <div className="flex items-center justify-center">
-        <Image width={120} src={logo} alt="logo"/>
-        <h1 className="text-5xl">Envios</h1>
-      </div>
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Filter emails..."
-          value={filterEmail}
-          onChange={(event) => setFilterEmail(event.target.value)}
-          className="max-w-sm"
-        />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            {/* <Button variant="outline" className="ml-auto">
-              Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
-            </Button> */}
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => (
-                <DropdownMenuCheckboxItem
-                  key={column.id}
-                  className="capitalize"
-                  checked={column.getIsVisible()}
-                  onCheckedChange={(value) =>
-                    column.toggleVisibility(!!value)
-                  }
-                >
-                  {column.id}
-                </DropdownMenuCheckboxItem>
+    return (
+      <div className="w-full container mx-auto">
+        <div className="flex items-center justify-center">
+          <Image width={120} src={logo} alt="logo"/>
+          <h1 className="text-5xl">Envios</h1>
+        </div>
+        <div className="flex items-center py-4">
+          <Input
+            placeholder="Filter emails..."
+            value={filterEmail}
+            onChange={(event) => setFilterEmail(event.target.value)}
+            className="max-w-sm"
+          />
+        </div>
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <TableHead key={header.id}>
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                    </TableHead>
+                  ))}
+                </TableRow>
               ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+            </TableHeader>
+            <TableBody>
+              {/* Renderização do corpo da tabela */}
+              {table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map((Cell) => (
+                    <TableCell key={Cell.id}>
+                      {flexRender(
+                        Cell.column.columnDef.cell,
+                        Cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </div>
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
-                {row.getVisibleCells().map((Cell) => (
-                  <TableCell key={Cell.id}>
-                    {flexRender(
-                      Cell.column.columnDef.cell,
-                      Cell.getContext()
-                    )}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-    </div>
-  );
-}
+    );
+  }
