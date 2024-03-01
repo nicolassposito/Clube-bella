@@ -2,7 +2,7 @@
 
 import { NextApiRequest, NextApiResponse } from "next";
 import { createClient } from "@supabase/supabase-js";
-import { Profile as OriginalProfile } from "@/app/admin/page";
+import { Profile as OriginalProfile } from "@/app/admin/components/columns";
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
