@@ -102,7 +102,7 @@ type profilesData = {
     },
     {
         id: 'actions',
-        cell: ({ row }) => {
+        cell: function Cell({ row }) {
           const [codigoRastreio, setCodigoRastreio] = React.useState('');
           const [preferences, setPreferences] = React.useState({ endereco: '', complemento: '', cor: '', tamanho: '' });
           const [isLoading, setIsLoading] = React.useState(false);
